@@ -8,7 +8,7 @@ export const signUpController = async (req, res) => {
     const { name, email, password } = req.body;
 
     // Call service
-    const user = await signUpUser({
+    const user = await signUpchUser({
       name,
       email,
       password,
@@ -29,3 +29,5 @@ export const signUpController = async (req, res) => {
     });
   }
 };
+
+
