@@ -32,7 +32,7 @@ const router = express.Router();
  *                   type: object
  *       500:
  *         description: Internal server error
- */
+ 
 router.post("/signup", signUpController);
 
 export default router;
