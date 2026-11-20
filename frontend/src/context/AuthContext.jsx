@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import * as authService from '../services/authService'
 
@@ -7,39 +7,48 @@ const AuthContext = createContext(null)
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [authLoading, setAuthLoading] = useState(true)
+  const authRevision = useRef(0)
 
   const refreshUser = useCallback(async () => {
+    const revision = ++authRevision.current
     try {
       const res = await authService.getCurrentUser()
-      setUser(res?.user || null)
+      if (revision === authRevision.current) setUser(res?.user || null)
     } catch {
-      setUser(null)
+      if (revision === authRevision.current) setUser(null)
     } finally {
-      setAuthLoading(false)
+      if (revision === authRevision.current) setAuthLoading(false)
     }
   }, [])
 
   useEffect(() => {
+    // refreshUser only updates state after the session request settles.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     refreshUser()
+    return () => { authRevision.current += 1 }
   }, [refreshUser])
 
-  const login = async (credentials) => {
-    const res = await authService.login(credentials)
-    setUser(res.user)
-    return res
+  const authenticate = async (action, payload) => {
+    const revision = ++authRevision.current
+    try {
+      const res = await action(payload)
+      if (revision === authRevision.current) setUser(res.user)
+      return res
+    } finally {
+      if (revision === authRevision.current) setAuthLoading(false)
+    }
   }
 
-  const register = async (details) => {
-    const res = await authService.register(details)
-    setUser(res.user)
-    return res
-  }
+  const login = (credentials) => authenticate(authService.login, credentials)
+  const register = (details) => authenticate(authService.register, details)
 
   const logout = async () => {
+    ++authRevision.current
     try {
       await authService.logout()
     } finally {
       setUser(null)
+      setAuthLoading(false)
     }
   }
 

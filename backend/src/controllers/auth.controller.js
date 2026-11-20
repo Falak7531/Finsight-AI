@@ -5,15 +5,7 @@ import {
   updateProfileService,
 } from '../services/auth.service.js'
 
-const isProd = process.env.NODE_ENV === 'production'
-
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  secure: isProd,
-  sameSite: isProd ? 'none' : 'lax',
-  path: '/',
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-}
+import { AUTH_COOKIE_MAX_AGE, getAuthCookieOptions } from '../config/authCookie.js'
 
 export const signUpController = async (req, res, next) => {
   try {
@@ -23,7 +15,7 @@ export const signUpController = async (req, res, next) => {
       userEmail,
       userPassword
     )
-    res.cookie('token', token, COOKIE_OPTIONS)
+    res.cookie('token', token, { ...getAuthCookieOptions(), maxAge: AUTH_COOKIE_MAX_AGE })
     return res.status(201).json({
       success: true,
       message: 'Account created successfully',
@@ -38,7 +30,7 @@ export const signInController = async (req, res, next) => {
   try {
     const { userEmail, userPassword } = req.body || {}
     const { user, token } = await signInService(userEmail, userPassword)
-    res.cookie('token', token, COOKIE_OPTIONS)
+    res.cookie('token', token, { ...getAuthCookieOptions(), maxAge: AUTH_COOKIE_MAX_AGE })
     return res.status(200).json({
       success: true,
       message: 'Login successful',
@@ -50,12 +42,7 @@ export const signInController = async (req, res, next) => {
 }
 
 export const logoutController = async (req, res) => {
-  res.clearCookie('token', {
-    httpOnly: true,
-    secure: isProd,
-    sameSite: isProd ? 'none' : 'lax',
-    path: '/',
-  })
+  res.clearCookie('token', getAuthCookieOptions())
   return res.status(200).json({
     success: true,
     message: 'Logged out successfully',

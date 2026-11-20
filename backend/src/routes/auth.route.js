@@ -11,6 +11,12 @@ import { authMiddleware } from '../middlewares/auth.middleware.js'
 
 const router = express.Router()
 
+// Session probes and user data must never be served from a stale cache.
+router.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store')
+  next()
+})
+
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 60,

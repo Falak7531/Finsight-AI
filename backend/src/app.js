@@ -8,6 +8,10 @@ import budgetRoutes from './routes/budget.route.js'
 
 const app = express()
 
+// Render terminates public traffic at its reverse proxy. Trust only the nearest
+// hop, rather than arbitrary client-supplied forwarding chains.
+if (process.env.NODE_ENV === 'production') app.set('trust proxy', 1)
+
 // 1. CORS (explicit origin + credentials for httpOnly cookie auth)
 app.use(
   cors({

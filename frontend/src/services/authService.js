@@ -1,7 +1,22 @@
-import { apiRequest } from './apiClient'
+import { ApiError, apiRequest } from './apiClient'
+
+async function confirmSession(result) {
+  try {
+    const session = await getCurrentUser()
+    return { ...result, user: session.user }
+  } catch (err) {
+    if (err.status === 401) {
+      throw new ApiError(
+        'Your session cookie could not be saved or sent. Please allow cookies for this site and try again.',
+        401
+      )
+    }
+    throw err
+  }
+}
 
 export async function register({ name, email, password }) {
-  return apiRequest('/auth/register', {
+  const result = await apiRequest('/auth/register', {
     method: 'POST',
     body: {
       userName: name.trim(),
@@ -9,16 +24,18 @@ export async function register({ name, email, password }) {
       userPassword: password,
     },
   })
+  return confirmSession(result)
 }
 
 export async function login({ email, password }) {
-  return apiRequest('/auth/login', {
+  const result = await apiRequest('/auth/login', {
     method: 'POST',
     body: {
       userEmail: email.trim().toLowerCase(),
       userPassword: password,
     },
   })
+  return confirmSession(result)
 }
 
 export async function logout() {

@@ -11,7 +11,10 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --experimental-test-module-mocks --test",
+    "build": "prisma generate --config prisma7.config.ts",
+    "db:deploy": "prisma migrate deploy --config prisma7.config.ts",
+    "prestart": "npm run db:deploy",
     "start": "node src/index.js",
     "dev": "node --watch src/index.js"
   },
@@ -34,6 +37,7 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.4.3",
     "@types/pg": "^8.23.1",
     "prisma": "7.10.0"
   }
