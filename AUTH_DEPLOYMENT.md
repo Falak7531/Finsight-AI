@@ -86,6 +86,24 @@ From `frontend`: `npm ci`, `npm test`, `npm run build`.
 
 Full frontend lint also reports an existing `react-hooks/set-state-in-effect` finding in `src/context/DashboardContext.jsx`, outside this authentication change. Run `npx eslint src/context/AuthContext.jsx src/context/__tests__/AuthContext.test.jsx src/services/authService.js src/services/apiClient.js src/services/__tests__/authService.test.js vitest.config.js` to check the changed frontend files.
 
-Validation result: 14 backend tests (including PostgreSQL migration tests) and 13 frontend tests passed; changed frontend files passed lint; production build passed with the existing large-bundle warning. The backend suite needs permission to bind its localhost HTTP server in restricted execution environments. No live deployment was made from this workspace.
+Validation result: 14 backend tests (including PostgreSQL migration tests) and 13 frontend tests passed; changed frontend files passed lint; production build passed with the existing large-bundle warning. The backend suite needs permission to bind its localhost HTTP server in restricted execution environments. Both existing Render services were subsequently deployed successfully; see the deployment record below.
 
 Additional validation: applied all three migrations to a temporary native PostgreSQL database with the installed Prisma 7 CLI, then applied them again (no pending migrations). Prisma migrate diff reported no difference from prisma/schema.prisma. Real Prisma registration, password verification/login, and current-user queries passed against that isolated database. It was shut down after testing.
+
+## Completed production deployment — 21 November 2026
+
+Confirmed workspace: Falak’s `My Workspace` (`tea-d7heutpo3t8c73admeag`). Code commit: `e3c9d0782e4597fd66e3e992be7a6404e3c7d118`, pushed to the existing repository’s `main` branch.
+
+- Backend deployment `dep-dc0drnqjnfac73ba4fcg`: Live at 05:26 IST. [Backend dashboard](https://dashboard.render.com/web/srv-dc0d3hu7bikc73f5sfqg).
+- Frontend deployment `dep-dc0drpbl550s73cqjn9g`: Live at 05:25 IST. [Frontend dashboard](https://dashboard.render.com/static/srv-dc0d67k9v7es739rtjv0).
+- Merged backend NODE_ENV=production and FRONTEND_URL=https://finsight-ai-exai.onrender.com without replacing other variables. Existing JWT_SECRET, database connection and other secrets were preserved. The frontend API URL was inspected and already correct.
+- Saved and verified the frontend `/*` → `/index.html` rule with action **Rewrite**. Direct `/login` now returns HTTP 200.
+- Retained the working Render build commands (`npm install && npx prisma generate` for the backend, `npm install && npm run build` for the frontend), root directories and publish directory. Logs confirm the backend build discovers prisma7.config.ts. The new npm prestart hook applies migrations before `node src/index.js` starts.
+- Automatic deployments did not arrive after the Git push; deployment lists and event histories showed no queued/building deployment for the new commit. Explicit latest-commit deploys were triggered after that check, and both reported the correct code SHA and reached Live.
+- Production `_prisma_migrations` confirms all three migrations finished successfully with none rolled back. The database was initialized through migrations, without any reset or data deletion.
+
+Live HTTP verification passed: health 200; registration 201; registration cookie /me 200; login 200; login cookie /me 200; incorrect password 401; invalid token 401 with cookie clearing; logout 200 with cookie clearing; logged-out /me 401 with no-store; exact credentialed CORS. HttpOnly, Secure, SameSite=None, Path=/, seven-day Max-Age and no Domain attribute were verified from live Set-Cookie headers. Frontend /, /login, /signup and /dashboard return the SPA document with HTTP 200 (the dashboard is still guarded by React authentication).
+
+Two clearly marked `FinSight Deployment Check` accounts with generated `deployment-check-...@example.invalid` addresses were retained. A transient closed HTTP connection interrupted the first verification after registration, so a second account was used for the completed checks. Their random credentials were neither printed nor saved. No pre-existing records were deleted or altered. Expired-session handling was verified locally; no production signing secret was retrieved. HTTP cookie round-trips were verified; browser privacy settings can still block cross-site cookies as described above.
+
+For future code deployments, push the intended commit to main, inspect Render’s deploy list, and verify the intended SHA. If no automatic deployment is queued or active, use Manual Deploy → Deploy latest commit for each service. Wait for Live and repeat the browser checks above. Never run migrate reset or delete the database.
