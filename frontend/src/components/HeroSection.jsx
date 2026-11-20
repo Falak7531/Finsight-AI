@@ -73,12 +73,12 @@ export function HeroSection() {
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
 
-          <a
-            href="#dashboard"
+          <Link
+            to="/dashboard"
             className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.03] px-6 py-3.5 text-sm font-medium text-[#E5E7EB] transition hover:border-white/25 hover:bg-white/[0.07] hover:text-white"
           >
-            Preview Dashboard
-          </a>
+            Open Live Dashboard
+          </Link>
         </motion.div>
       </div>
     </section>

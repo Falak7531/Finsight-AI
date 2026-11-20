@@ -1,10 +1,22 @@
 generator client {
   provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum DocumentStatus {
+  UPLOADED
+  PROCESSING
+  PROCESSED
+  FAILED
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
 }
 
 model User {
@@ -14,4 +26,100 @@ model User {
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  analytics    Analytics[]
+  documents    UploadedDocument[]
+  transactions Transaction[]
+  budgets      Budget[]
+}
+
+model UploadedDocument {
+  id             String         @id @default(uuid()) @db.Uuid
+  userId         String         @db.Uuid
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  originalName   String
+  storedFileName String
+  filePath       String
+  fileType       String
+  fileSize       Int
+  status         DocumentStatus @default(UPLOADED)
+  errorMessage   String?
+  rowsParsed     Int            @default(0)
+
+  analytics      Analytics?
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([userId, createdAt(sort: Desc)])
+}
+
+model Analytics {
+  id                String            @id @default(uuid()) @db.Uuid
+  userId            String            @db.Uuid
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  documentId        String?           @unique @db.Uuid
+  document          UploadedDocument? @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  fileName          String
+  fileUrl           String
+
+  totalIncome       Decimal           @default(0) @db.Decimal(12, 2)
+  totalExpense      Decimal           @default(0) @db.Decimal(12, 2)
+  totalSavings      Decimal           @default(0) @db.Decimal(12, 2)
+
+  categoryBreakdown Json
+  monthlyBreakdown  Json?
+  topTransactions   Json
+  aiInsights        Json
+
+  transactions      Transaction[]
+
+  createdAt         DateTime          @default(now())
+
+  @@index([userId, createdAt(sort: Desc)])
+}
+
+model Transaction {
+  id              String          @id @default(uuid()) @db.Uuid
+  userId          String          @db.Uuid
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  analyticsId     String?         @db.Uuid
+  analytics       Analytics?      @relation(fields: [analyticsId], references: [id], onDelete: Cascade)
+
+  merchant        String
+  description     String
+  amount          Decimal         @db.Decimal(12, 2)
+  transactionType TransactionType
+  category        String
+  transactionDate DateTime
+  dedupeHash      String
+
+  createdAt       DateTime        @default(now())
+
+  @@unique([userId, dedupeHash])
+  @@index([userId, transactionDate(sort: Desc)])
+  @@index([userId, category])
+  @@index([userId, transactionType])
+  @@index([analyticsId])
+}
+
+model Budget {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @db.Uuid
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  category     String
+  monthlyLimit Decimal  @db.Decimal(12, 2)
+  month        Int
+  year         Int
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([userId, category, month, year])
+  @@index([userId, year, month])
 }

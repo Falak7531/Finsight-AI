@@ -1,7 +1,7 @@
-import { AlertCircle, ArrowRight, Info, Mail } from 'lucide-react'
+import { AlertCircle, ArrowRight, Mail } from 'lucide-react'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { signIn } from '../../services/authService'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 import { AuthButton } from './AuthButton'
 import { AuthInput } from './AuthInput'
 import { PasswordInput } from './PasswordInput'
@@ -10,13 +10,17 @@ import { SocialAuthButtons } from './SocialAuthButtons'
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export function LoginForm() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { login } = useAuth()
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [rememberMe, setRememberMe] = useState(false)
   const [errors, setErrors] = useState({})
   const [touched, setTouched] = useState({})
   const [loading, setLoading] = useState(false)
-  const [feedback, setFeedback] = useState(null)
+  const [serverError, setServerError] = useState('')
 
   const validate = (nextValues = { email, password }) => {
     const nextErrors = {}
@@ -25,11 +29,9 @@ export function LoginForm() {
     } else if (!EMAIL_REGEX.test(nextValues.email.trim())) {
       nextErrors.email = 'Please enter a valid email address.'
     }
-
     if (!nextValues.password) {
       nextErrors.password = 'Password is required.'
     }
-
     return nextErrors
   }
 
@@ -43,14 +45,17 @@ export function LoginForm() {
     setTouched({ email: true, password: true })
     const validationErrors = validate()
     setErrors(validationErrors)
-    setFeedback(null)
+    setServerError('')
 
     if (Object.keys(validationErrors).length > 0) return
 
     setLoading(true)
     try {
-      const result = await signIn({ email, password, rememberMe })
-      setFeedback(result)
+      await login({ email, password })
+      const dest = location.state?.from?.pathname || '/dashboard'
+      navigate(dest, { replace: true })
+    } catch (err) {
+      setServerError(err.message || 'Sign in failed. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -101,7 +106,6 @@ export function LoginForm() {
           disabled={loading}
         />
 
-        {/* Remember me & Forgot Password */}
         <div className="flex items-center justify-between gap-3 pt-0.5">
           <label className="inline-flex cursor-pointer items-center gap-2 text-xs text-[#A1A1AA] select-none hover:text-[#E4E4E7]">
             <input
@@ -121,21 +125,13 @@ export function LoginForm() {
           </Link>
         </div>
 
-        {feedback && (
+        {serverError && (
           <div
-            role="status"
-            className={`flex items-start gap-2.5 rounded-xl border p-3.5 text-xs leading-relaxed ${
-              feedback.status === 'error'
-                ? 'border-red-500/35 bg-red-500/10 text-red-200'
-                : 'border-[#8BFF19]/30 bg-[#8BFF19]/[0.08] text-[#E4E4E7]'
-            }`}
+            role="alert"
+            className="flex items-start gap-2.5 rounded-xl border border-red-500/35 bg-red-500/10 p-3.5 text-xs leading-relaxed text-red-200"
           >
-            {feedback.status === 'error' ? (
-              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-400" />
-            ) : (
-              <Info className="mt-0.5 h-4 w-4 shrink-0 text-[#8BFF19]" />
-            )}
-            <span>{feedback.message}</span>
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-400" />
+            <span>{serverError}</span>
           </div>
         )}
 

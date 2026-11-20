@@ -63,3 +63,61 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #2F363C;
 }
+
+/* ================================================================
+   FinSight-AI Dashboard Theme Tokens (Obsidian Black + Neon Lime)
+   Scoped to .finsight-dashboard so Landing/Auth pages stay untouched
+   ================================================================ */
+.finsight-dashboard,
+.finsight-dashboard[data-dash-theme='dark'] {
+  --dash-bg: #050605;
+  --dash-bg-secondary: #090B09;
+  --dash-card: #101310;
+  --dash-card-hover: #151A14;
+  --dash-accent: #8DFF00;
+  --dash-accent-hover: #A4FF32;
+  --dash-accent-soft: #B8F36B;
+  --dash-accent-bg: #1C2A0D;
+  --dash-text: #F5F7F3;
+  --dash-muted: #A0A69E;
+  --dash-subtle: #6F786E;
+  --dash-border: #20251F;
+  --dash-input: #151A14;
+  --dash-danger: #FF6262;
+  --dash-warn: #F2B84B;
+  --dash-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  --dash-glow: 0 0 22px rgba(141, 255, 0, 0.22);
+}
+
+.finsight-dashboard[data-dash-theme='light'] {
+  --dash-bg: #F5F7F4;
+  --dash-bg-secondary: #FFFFFF;
+  --dash-card: #FFFFFF;
+  --dash-card-hover: #F2F5F0;
+  --dash-accent: #4C9A00;
+  --dash-accent-hover: #3F8200;
+  --dash-accent-soft: #65A30D;
+  --dash-accent-bg: rgba(76, 154, 0, 0.11);
+  --dash-text: #0C100B;
+  --dash-muted: #556054;
+  --dash-subtle: #788477;
+  --dash-border: #DCE2DA;
+  --dash-input: #F4F7F3;
+  --dash-danger: #DC4444;
+  --dash-warn: #C98A1A;
+  --dash-shadow: 0 6px 22px rgba(5, 6, 5, 0.06);
+  --dash-glow: 0 4px 14px rgba(76, 154, 0, 0.18);
+}
+
+.finsight-dashboard {
+  background-color: var(--dash-bg);
+  color: var(--dash-text);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.finsight-dashboard input:focus,
+.finsight-dashboard select:focus {
+  border-color: var(--dash-accent);
+  box-shadow: 0 0 0 2px rgba(141, 255, 0, 0.18);
+}
+

@@ -1,7 +1,7 @@
-import { AlertCircle, ArrowRight, CheckCircle2, Info, Mail, User } from 'lucide-react'
+import { AlertCircle, ArrowRight, Mail, User } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { signUp } from '../../services/authService'
+import { useAuth } from '../../context/AuthContext'
 import { AuthButton } from './AuthButton'
 import { AuthInput } from './AuthInput'
 import { PasswordInput } from './PasswordInput'
@@ -11,6 +11,8 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export function SignupForm() {
   const navigate = useNavigate()
+  const { register } = useAuth()
+
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -18,13 +20,12 @@ export function SignupForm() {
   const [errors, setErrors] = useState({})
   const [touched, setTouched] = useState({})
   const [loading, setLoading] = useState(false)
-  const [feedback, setFeedback] = useState(null)
+  const [serverError, setServerError] = useState('')
 
   const validate = (
     vals = { name, email, password, confirmPassword }
   ) => {
     const nextErrors = {}
-
     if (!vals.name.trim()) {
       nextErrors.name = 'Full name is required.'
     } else if (vals.name.trim().length < 2) {
@@ -67,17 +68,16 @@ export function SignupForm() {
     })
     const validationErrors = validate()
     setErrors(validationErrors)
-    setFeedback(null)
+    setServerError('')
 
     if (Object.keys(validationErrors).length > 0) return
 
     setLoading(true)
     try {
-      const result = await signUp({ name, email, password })
-      setFeedback(result)
-      if (result.status === 'success' && result.mode === 'backend') {
-        setTimeout(() => navigate('/login'), 1400)
-      }
+      await register({ name, email, password })
+      navigate('/dashboard', { replace: true })
+    } catch (err) {
+      setServerError(err.message || 'Account creation failed. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -166,25 +166,13 @@ export function SignupForm() {
           disabled={loading}
         />
 
-        {feedback && (
+        {serverError && (
           <div
-            role="status"
-            className={`flex items-start gap-2.5 rounded-xl border p-3.5 text-xs leading-relaxed ${
-              feedback.status === 'error'
-                ? 'border-red-500/35 bg-red-500/10 text-red-200'
-                : feedback.status === 'success'
-                  ? 'border-[#8BFF19]/40 bg-[#8BFF19]/12 text-[#ECFCCB]'
-                  : 'border-[#B8F36B]/30 bg-[#B8F36B]/[0.08] text-[#E4E4E7]'
-            }`}
+            role="alert"
+            className="flex items-start gap-2.5 rounded-xl border border-red-500/35 bg-red-500/10 p-3.5 text-xs leading-relaxed text-red-200"
           >
-            {feedback.status === 'error' ? (
-              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-400" />
-            ) : feedback.status === 'success' ? (
-              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#8BFF19]" />
-            ) : (
-              <Info className="mt-0.5 h-4 w-4 shrink-0 text-[#B8F36B]" />
-            )}
-            <span>{feedback.message}</span>
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-400" />
+            <span>{serverError}</span>
           </div>
         )}
 
