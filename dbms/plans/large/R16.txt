@@ -1,0 +1,53 @@
+=== R16 run 1 ===
+Nested Loop  (cost=0.70..4922.64 rows=2364 width=55) (actual time=0.026..7.266 rows=2368 loops=1)
+  Output: d.dispute_id, d.reason, d.raised_at, t.upi_ref, t.amount
+  Inner Unique: true
+  Buffers: shared hit=10596 read=1215
+  ->  Index Scan using idx_disputes_status_raised on gpay.disputes d  (cost=0.28..153.48 rows=2364 width=42) (actual time=0.019..0.876 rows=2368 loops=1)
+        Output: d.dispute_id, d.txn_id, d.raised_by, d.reason, d.raised_at, d.status, d.resolved_at
+        Index Cond: (((d.status)::text = 'OPEN'::text) AND (d.raised_at < '2026-06-22 18:30:00+00'::timestamp with time zone))
+        Buffers: shared hit=2242 read=97
+  ->  Index Scan using transactions_pkey on gpay.transactions t  (cost=0.42..2.02 rows=1 width=29) (actual time=0.003..0.003 rows=1 loops=2368)
+        Output: t.txn_id, t.upi_ref, t.txn_type, t.payer_vpa, t.payee_vpa, t.merchant_id, t.amount, t.note, t.initiated_at, t.completed_at, t.status, t.failure_code
+        Index Cond: (t.txn_id = d.txn_id)
+        Buffers: shared hit=8354 read=1118
+Planning:
+  Buffers: shared hit=72 read=22 dirtied=1
+Planning Time: 0.213 ms
+Execution Time: 7.328 ms
+
+=== R16 run 2 ===
+Nested Loop  (cost=0.70..4922.64 rows=2364 width=55) (actual time=0.009..2.406 rows=2368 loops=1)
+  Output: d.dispute_id, d.reason, d.raised_at, t.upi_ref, t.amount
+  Inner Unique: true
+  Buffers: shared hit=11811
+  ->  Index Scan using idx_disputes_status_raised on gpay.disputes d  (cost=0.28..153.48 rows=2364 width=42) (actual time=0.007..0.331 rows=2368 loops=1)
+        Output: d.dispute_id, d.txn_id, d.raised_by, d.reason, d.raised_at, d.status, d.resolved_at
+        Index Cond: (((d.status)::text = 'OPEN'::text) AND (d.raised_at < '2026-06-22 18:30:00+00'::timestamp with time zone))
+        Buffers: shared hit=2339
+  ->  Index Scan using transactions_pkey on gpay.transactions t  (cost=0.42..2.02 rows=1 width=29) (actual time=0.001..0.001 rows=1 loops=2368)
+        Output: t.txn_id, t.upi_ref, t.txn_type, t.payer_vpa, t.payee_vpa, t.merchant_id, t.amount, t.note, t.initiated_at, t.completed_at, t.status, t.failure_code
+        Index Cond: (t.txn_id = d.txn_id)
+        Buffers: shared hit=9472
+Planning:
+  Buffers: shared hit=18
+Planning Time: 0.060 ms
+Execution Time: 2.455 ms
+
+=== R16 run 3 ===
+Nested Loop  (cost=0.70..4922.64 rows=2364 width=55) (actual time=0.007..2.086 rows=2368 loops=1)
+  Output: d.dispute_id, d.reason, d.raised_at, t.upi_ref, t.amount
+  Inner Unique: true
+  Buffers: shared hit=11811
+  ->  Index Scan using idx_disputes_status_raised on gpay.disputes d  (cost=0.28..153.48 rows=2364 width=42) (actual time=0.005..0.310 rows=2368 loops=1)
+        Output: d.dispute_id, d.txn_id, d.raised_by, d.reason, d.raised_at, d.status, d.resolved_at
+        Index Cond: (((d.status)::text = 'OPEN'::text) AND (d.raised_at < '2026-06-22 18:30:00+00'::timestamp with time zone))
+        Buffers: shared hit=2339
+  ->  Index Scan using transactions_pkey on gpay.transactions t  (cost=0.42..2.02 rows=1 width=29) (actual time=0.001..0.001 rows=1 loops=2368)
+        Output: t.txn_id, t.upi_ref, t.txn_type, t.payer_vpa, t.payee_vpa, t.merchant_id, t.amount, t.note, t.initiated_at, t.completed_at, t.status, t.failure_code
+        Index Cond: (t.txn_id = d.txn_id)
+        Buffers: shared hit=9472
+Planning:
+  Buffers: shared hit=18
+Planning Time: 0.042 ms
+Execution Time: 2.134 ms

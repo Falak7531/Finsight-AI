@@ -1,0 +1,98 @@
+=== R19 run 1 ===
+Sort  (cost=1787.98..1788.70 rows=288 width=36) (actual time=4.835..4.843 rows=283 loops=1)
+  Output: m.merchant_id, m.merchant_name, (max(t.initiated_at)), (count(*) FILTER (WHERE ((t.status)::text = 'SUCCESS'::text)))
+  Sort Key: (count(*) FILTER (WHERE ((t.status)::text = 'SUCCESS'::text))) DESC
+  Sort Method: quicksort  Memory: 47kB
+  Buffers: shared hit=981 read=2
+  ->  HashAggregate  (cost=1773.33..1776.21 rows=288 width=36) (actual time=4.791..4.809 rows=283 loops=1)
+        Output: m.merchant_id, m.merchant_name, max(t.initiated_at), count(*) FILTER (WHERE ((t.status)::text = 'SUCCESS'::text))
+        Group Key: m.merchant_id
+        Batches: 1  Memory Usage: 93kB
+        Buffers: shared hit=981 read=2
+        ->  Nested Loop Left Join  (cost=4.75..1293.33 rows=48000 width=35) (actual time=0.021..2.955 rows=28347 loops=1)
+              Output: m.merchant_id, m.merchant_name, t.initiated_at, t.status
+              Buffers: shared hit=981 read=2
+              ->  Bitmap Heap Scan on gpay.merchants m  (cost=4.33..43.93 rows=288 width=20) (actual time=0.016..0.070 rows=283 loops=1)
+                    Output: m.merchant_id, m.merchant_name, m.mcc, m.merchant_vpa, m.city_id, m.is_verified, m.onboarded_on
+                    Recheck Cond: (m.city_id = 1)
+                    Filter: m.is_verified
+                    Heap Blocks: exact=36
+                    Buffers: shared hit=36 read=2
+                    ->  Bitmap Index Scan on idx_merchants_city_verified  (cost=0.00..4.26 rows=288 width=0) (actual time=0.012..0.012 rows=283 loops=1)
+                          Index Cond: ((m.city_id = 1) AND (m.is_verified = true))
+                          Buffers: shared read=2
+              ->  Index Only Scan using idx_transactions_merchant_status_time on gpay.transactions t  (cost=0.42..3.33 rows=101 width=19) (actual time=0.002..0.005 rows=100 loops=283)
+                    Output: t.merchant_id, t.status, t.initiated_at
+                    Index Cond: (t.merchant_id = m.merchant_id)
+                    Heap Fetches: 8
+                    Buffers: shared hit=945
+Planning:
+  Buffers: shared hit=23 read=3
+Planning Time: 0.119 ms
+Execution Time: 4.864 ms
+
+=== R19 run 2 ===
+Sort  (cost=1787.98..1788.70 rows=288 width=36) (actual time=4.743..4.751 rows=283 loops=1)
+  Output: m.merchant_id, m.merchant_name, (max(t.initiated_at)), (count(*) FILTER (WHERE ((t.status)::text = 'SUCCESS'::text)))
+  Sort Key: (count(*) FILTER (WHERE ((t.status)::text = 'SUCCESS'::text))) DESC
+  Sort Method: quicksort  Memory: 47kB
+  Buffers: shared hit=983
+  ->  HashAggregate  (cost=1773.33..1776.21 rows=288 width=36) (actual time=4.702..4.719 rows=283 loops=1)
+        Output: m.merchant_id, m.merchant_name, max(t.initiated_at), count(*) FILTER (WHERE ((t.status)::text = 'SUCCESS'::text))
+        Group Key: m.merchant_id
+        Batches: 1  Memory Usage: 93kB
+        Buffers: shared hit=983
+        ->  Nested Loop Left Join  (cost=4.75..1293.33 rows=48000 width=35) (actual time=0.013..2.871 rows=28347 loops=1)
+              Output: m.merchant_id, m.merchant_name, t.initiated_at, t.status
+              Buffers: shared hit=983
+              ->  Bitmap Heap Scan on gpay.merchants m  (cost=4.33..43.93 rows=288 width=20) (actual time=0.009..0.058 rows=283 loops=1)
+                    Output: m.merchant_id, m.merchant_name, m.mcc, m.merchant_vpa, m.city_id, m.is_verified, m.onboarded_on
+                    Recheck Cond: (m.city_id = 1)
+                    Filter: m.is_verified
+                    Heap Blocks: exact=36
+                    Buffers: shared hit=38
+                    ->  Bitmap Index Scan on idx_merchants_city_verified  (cost=0.00..4.26 rows=288 width=0) (actual time=0.005..0.005 rows=283 loops=1)
+                          Index Cond: ((m.city_id = 1) AND (m.is_verified = true))
+                          Buffers: shared hit=2
+              ->  Index Only Scan using idx_transactions_merchant_status_time on gpay.transactions t  (cost=0.42..3.33 rows=101 width=19) (actual time=0.001..0.005 rows=100 loops=283)
+                    Output: t.merchant_id, t.status, t.initiated_at
+                    Index Cond: (t.merchant_id = m.merchant_id)
+                    Heap Fetches: 8
+                    Buffers: shared hit=945
+Planning:
+  Buffers: shared hit=17
+Planning Time: 0.078 ms
+Execution Time: 4.769 ms
+
+=== R19 run 3 ===
+Sort  (cost=1787.98..1788.70 rows=288 width=36) (actual time=4.560..4.568 rows=283 loops=1)
+  Output: m.merchant_id, m.merchant_name, (max(t.initiated_at)), (count(*) FILTER (WHERE ((t.status)::text = 'SUCCESS'::text)))
+  Sort Key: (count(*) FILTER (WHERE ((t.status)::text = 'SUCCESS'::text))) DESC
+  Sort Method: quicksort  Memory: 47kB
+  Buffers: shared hit=983
+  ->  HashAggregate  (cost=1773.33..1776.21 rows=288 width=36) (actual time=4.521..4.537 rows=283 loops=1)
+        Output: m.merchant_id, m.merchant_name, max(t.initiated_at), count(*) FILTER (WHERE ((t.status)::text = 'SUCCESS'::text))
+        Group Key: m.merchant_id
+        Batches: 1  Memory Usage: 93kB
+        Buffers: shared hit=983
+        ->  Nested Loop Left Join  (cost=4.75..1293.33 rows=48000 width=35) (actual time=0.009..2.708 rows=28347 loops=1)
+              Output: m.merchant_id, m.merchant_name, t.initiated_at, t.status
+              Buffers: shared hit=983
+              ->  Bitmap Heap Scan on gpay.merchants m  (cost=4.33..43.93 rows=288 width=20) (actual time=0.007..0.042 rows=283 loops=1)
+                    Output: m.merchant_id, m.merchant_name, m.mcc, m.merchant_vpa, m.city_id, m.is_verified, m.onboarded_on
+                    Recheck Cond: (m.city_id = 1)
+                    Filter: m.is_verified
+                    Heap Blocks: exact=36
+                    Buffers: shared hit=38
+                    ->  Bitmap Index Scan on idx_merchants_city_verified  (cost=0.00..4.26 rows=288 width=0) (actual time=0.004..0.004 rows=283 loops=1)
+                          Index Cond: ((m.city_id = 1) AND (m.is_verified = true))
+                          Buffers: shared hit=2
+              ->  Index Only Scan using idx_transactions_merchant_status_time on gpay.transactions t  (cost=0.42..3.33 rows=101 width=19) (actual time=0.001..0.004 rows=100 loops=283)
+                    Output: t.merchant_id, t.status, t.initiated_at
+                    Index Cond: (t.merchant_id = m.merchant_id)
+                    Heap Fetches: 8
+                    Buffers: shared hit=945
+Planning:
+  Buffers: shared hit=17
+Planning Time: 0.067 ms
+Execution Time: 4.582 ms

@@ -1,0 +1,27 @@
+=== R12 run 1 ===
+Index Scan using idx_bill_payments_user_status_due on bill_payments  (cost=0.29..8.31 rows=1 width=28) (actual time=0.014..0.014 rows=1.00 loops=1)
+  Index Cond: ((user_id = 1072) AND ((status)::text = 'DUE'::text) AND (due_date >= '2026-07-01'::date) AND (due_date <= '2026-07-07'::date))
+  Index Searches: 1
+  Buffers: shared hit=1 read=2
+Planning:
+  Buffers: shared hit=163 read=1
+Planning Time: 0.322 ms
+Execution Time: 0.033 ms
+=== R12 run 2 ===
+Index Scan using idx_bill_payments_user_status_due on bill_payments  (cost=0.29..8.31 rows=1 width=28) (actual time=0.007..0.007 rows=1.00 loops=1)
+  Index Cond: ((user_id = 1072) AND ((status)::text = 'DUE'::text) AND (due_date >= '2026-07-01'::date) AND (due_date <= '2026-07-07'::date))
+  Index Searches: 1
+  Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=156
+Planning Time: 0.215 ms
+Execution Time: 0.023 ms
+=== R12 run 3 ===
+Index Scan using idx_bill_payments_user_status_due on bill_payments  (cost=0.29..8.31 rows=1 width=28) (actual time=0.007..0.007 rows=1.00 loops=1)
+  Index Cond: ((user_id = 1072) AND ((status)::text = 'DUE'::text) AND (due_date >= '2026-07-01'::date) AND (due_date <= '2026-07-07'::date))
+  Index Searches: 1
+  Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=156
+Planning Time: 0.221 ms
+Execution Time: 0.024 ms

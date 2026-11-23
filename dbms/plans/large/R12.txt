@@ -1,0 +1,25 @@
+=== R12 run 1 ===
+Index Scan using idx_bill_payments_user_status_due on gpay.bill_payments  (cost=0.29..2.52 rows=1 width=26) (actual time=0.004..0.004 rows=0 loops=1)
+  Output: bill_id, biller_name, amount, due_date
+  Index Cond: ((bill_payments.user_id = 1072) AND ((bill_payments.status)::text = 'DUE'::text) AND (bill_payments.due_date >= '2026-07-01'::date) AND (bill_payments.due_date <= '2026-07-07'::date))
+  Buffers: shared read=2
+Planning:
+  Buffers: shared hit=47 read=17
+Planning Time: 0.130 ms
+Execution Time: 0.007 ms
+
+=== R12 run 2 ===
+Index Scan using idx_bill_payments_user_status_due on gpay.bill_payments  (cost=0.29..2.52 rows=1 width=26) (actual time=0.002..0.002 rows=0 loops=1)
+  Output: bill_id, biller_name, amount, due_date
+  Index Cond: ((bill_payments.user_id = 1072) AND ((bill_payments.status)::text = 'DUE'::text) AND (bill_payments.due_date >= '2026-07-01'::date) AND (bill_payments.due_date <= '2026-07-07'::date))
+  Buffers: shared hit=2
+Planning Time: 0.016 ms
+Execution Time: 0.004 ms
+
+=== R12 run 3 ===
+Index Scan using idx_bill_payments_user_status_due on gpay.bill_payments  (cost=0.29..2.52 rows=1 width=26) (actual time=0.002..0.002 rows=0 loops=1)
+  Output: bill_id, biller_name, amount, due_date
+  Index Cond: ((bill_payments.user_id = 1072) AND ((bill_payments.status)::text = 'DUE'::text) AND (bill_payments.due_date >= '2026-07-01'::date) AND (bill_payments.due_date <= '2026-07-07'::date))
+  Buffers: shared hit=2
+Planning Time: 0.020 ms
+Execution Time: 0.004 ms

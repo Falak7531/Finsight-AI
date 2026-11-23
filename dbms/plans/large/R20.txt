@@ -1,0 +1,125 @@
+=== R20 run 1 ===
+Finalize GroupAggregate  (cost=10468.01..10812.74 rows=2500 width=44) (actual time=31.856..32.783 rows=30 loops=1)
+  Output: ((initiated_at)::date), count(*), round(((100.0 * (count(*) FILTER (WHERE ((status)::text = 'SUCCESS'::text)))::numeric) / (count(*))::numeric), 2)
+  Group Key: ((transactions.initiated_at)::date)
+  Buffers: shared hit=219 read=2355 dirtied=2 written=176
+  ->  Gather Merge  (cost=10468.01..10734.61 rows=2084 width=20) (actual time=31.791..32.759 rows=90 loops=1)
+        Output: ((initiated_at)::date), (PARTIAL count(*)), (PARTIAL count(*) FILTER (WHERE ((status)::text = 'SUCCESS'::text)))
+        Workers Planned: 2
+        Workers Launched: 2
+        Buffers: shared hit=219 read=2355 dirtied=2 written=176
+        ->  Partial GroupAggregate  (cost=9467.99..9494.04 rows=1042 width=20) (actual time=30.330..31.012 rows=30 loops=3)
+              Output: ((initiated_at)::date), PARTIAL count(*), PARTIAL count(*) FILTER (WHERE ((status)::text = 'SUCCESS'::text))
+              Group Key: ((transactions.initiated_at)::date)
+              Buffers: shared hit=219 read=2355 dirtied=2 written=176
+              Worker 0:  actual time=29.867..30.430 rows=30 loops=1
+                Buffers: shared hit=89 read=772 dirtied=1 written=57
+              Worker 1:  actual time=29.961..30.547 rows=30 loops=1
+                Buffers: shared hit=80 read=737 written=63
+              ->  Sort  (cost=9467.99..9470.59 rows=1042 width=11) (actual time=30.301..30.564 rows=9105 loops=3)
+                    Output: ((initiated_at)::date), status
+                    Sort Key: ((transactions.initiated_at)::date)
+                    Sort Method: quicksort  Memory: 1010kB
+                    Buffers: shared hit=219 read=2355 dirtied=2 written=176
+                    Worker 0:  actual time=29.842..30.058 rows=7827 loops=1
+                      Sort Method: quicksort  Memory: 621kB
+                      Buffers: shared hit=89 read=772 dirtied=1 written=57
+                    Worker 1:  actual time=29.930..30.160 rows=8058 loops=1
+                      Sort Method: quicksort  Memory: 633kB
+                      Buffers: shared hit=80 read=737 written=63
+                    ->  Parallel Index Only Scan using idx_transactions_status_time on gpay.transactions  (cost=0.42..9415.76 rows=1042 width=11) (actual time=1.137..29.637 rows=9105 loops=3)
+                          Output: (initiated_at)::date, status
+                          Filter: (((transactions.initiated_at)::date >= '2026-06-01'::date) AND ((transactions.initiated_at)::date <= '2026-06-30'::date))
+                          Rows Removed by Filter: 157562
+                          Heap Fetches: 75
+                          Buffers: shared hit=148 read=2352 dirtied=2 written=176
+                          Worker 0:  actual time=1.666..29.212 rows=7827 loops=1
+                            Buffers: shared hit=52 read=772 dirtied=1 written=57
+                          Worker 1:  actual time=1.735..29.273 rows=8058 loops=1
+                            Buffers: shared hit=46 read=734 written=63
+Planning Time: 0.031 ms
+Execution Time: 32.794 ms
+
+=== R20 run 2 ===
+Finalize GroupAggregate  (cost=10468.01..10812.74 rows=2500 width=44) (actual time=13.838..14.728 rows=30 loops=1)
+  Output: ((initiated_at)::date), count(*), round(((100.0 * (count(*) FILTER (WHERE ((status)::text = 'SUCCESS'::text)))::numeric) / (count(*))::numeric), 2)
+  Group Key: ((transactions.initiated_at)::date)
+  Buffers: shared hit=2571
+  ->  Gather Merge  (cost=10468.01..10734.61 rows=2084 width=20) (actual time=13.793..14.711 rows=90 loops=1)
+        Output: ((initiated_at)::date), (PARTIAL count(*)), (PARTIAL count(*) FILTER (WHERE ((status)::text = 'SUCCESS'::text)))
+        Workers Planned: 2
+        Workers Launched: 2
+        Buffers: shared hit=2571
+        ->  Partial GroupAggregate  (cost=9467.99..9494.04 rows=1042 width=20) (actual time=12.393..13.068 rows=30 loops=3)
+              Output: ((initiated_at)::date), PARTIAL count(*), PARTIAL count(*) FILTER (WHERE ((status)::text = 'SUCCESS'::text))
+              Group Key: ((transactions.initiated_at)::date)
+              Buffers: shared hit=2571
+              Worker 0:  actual time=12.002..12.560 rows=30 loops=1
+                Buffers: shared hit=761
+              Worker 1:  actual time=11.988..12.569 rows=30 loops=1
+                Buffers: shared hit=868
+              ->  Sort  (cost=9467.99..9470.59 rows=1042 width=11) (actual time=12.367..12.627 rows=9105 loops=3)
+                    Output: ((initiated_at)::date), status
+                    Sort Key: ((transactions.initiated_at)::date)
+                    Sort Method: quicksort  Memory: 1000kB
+                    Buffers: shared hit=2571
+                    Worker 0:  actual time=11.973..12.193 rows=7968 loops=1
+                      Sort Method: quicksort  Memory: 628kB
+                      Buffers: shared hit=761
+                    Worker 1:  actual time=11.967..12.185 rows=8086 loops=1
+                      Sort Method: quicksort  Memory: 635kB
+                      Buffers: shared hit=868
+                    ->  Parallel Index Only Scan using idx_transactions_status_time on gpay.transactions  (cost=0.42..9415.76 rows=1042 width=11) (actual time=0.425..11.719 rows=9105 loops=3)
+                          Output: (initiated_at)::date, status
+                          Filter: (((transactions.initiated_at)::date >= '2026-06-01'::date) AND ((transactions.initiated_at)::date <= '2026-06-30'::date))
+                          Rows Removed by Filter: 157562
+                          Heap Fetches: 71
+                          Buffers: shared hit=2497
+                          Worker 0:  actual time=0.643..11.354 rows=7968 loops=1
+                            Buffers: shared hit=724
+                          Worker 1:  actual time=0.628..11.328 rows=8086 loops=1
+                            Buffers: shared hit=831
+Planning Time: 0.046 ms
+Execution Time: 14.740 ms
+
+=== R20 run 3 ===
+Finalize GroupAggregate  (cost=10468.01..10812.74 rows=2500 width=44) (actual time=13.086..13.971 rows=30 loops=1)
+  Output: ((initiated_at)::date), count(*), round(((100.0 * (count(*) FILTER (WHERE ((status)::text = 'SUCCESS'::text)))::numeric) / (count(*))::numeric), 2)
+  Group Key: ((transactions.initiated_at)::date)
+  Buffers: shared hit=2579
+  ->  Gather Merge  (cost=10468.01..10734.61 rows=2084 width=20) (actual time=13.054..13.954 rows=90 loops=1)
+        Output: ((initiated_at)::date), (PARTIAL count(*)), (PARTIAL count(*) FILTER (WHERE ((status)::text = 'SUCCESS'::text)))
+        Workers Planned: 2
+        Workers Launched: 2
+        Buffers: shared hit=2579
+        ->  Partial GroupAggregate  (cost=9467.99..9494.04 rows=1042 width=20) (actual time=11.724..12.399 rows=30 loops=3)
+              Output: ((initiated_at)::date), PARTIAL count(*), PARTIAL count(*) FILTER (WHERE ((status)::text = 'SUCCESS'::text))
+              Group Key: ((transactions.initiated_at)::date)
+              Buffers: shared hit=2579
+              Worker 0:  actual time=11.375..11.981 rows=30 loops=1
+                Buffers: shared hit=768
+              Worker 1:  actual time=11.354..11.904 rows=30 loops=1
+                Buffers: shared hit=888
+              ->  Sort  (cost=9467.99..9470.59 rows=1042 width=11) (actual time=11.698..11.953 rows=9105 loops=3)
+                    Output: ((initiated_at)::date), status
+                    Sort Key: ((transactions.initiated_at)::date)
+                    Sort Method: quicksort  Memory: 999kB
+                    Buffers: shared hit=2579
+                    Worker 0:  actual time=11.352..11.578 rows=8260 loops=1
+                      Sort Method: quicksort  Memory: 836kB
+                      Buffers: shared hit=768
+                    Worker 1:  actual time=11.326..11.537 rows=7817 loops=1
+                      Sort Method: quicksort  Memory: 620kB
+                      Buffers: shared hit=888
+                    ->  Parallel Index Only Scan using idx_transactions_status_time on gpay.transactions  (cost=0.42..9415.76 rows=1042 width=11) (actual time=0.389..11.077 rows=9105 loops=3)
+                          Output: (initiated_at)::date, status
+                          Filter: (((transactions.initiated_at)::date >= '2026-06-01'::date) AND ((transactions.initiated_at)::date <= '2026-06-30'::date))
+                          Rows Removed by Filter: 157562
+                          Heap Fetches: 71
+                          Buffers: shared hit=2505
+                          Worker 0:  actual time=0.589..10.740 rows=8260 loops=1
+                            Buffers: shared hit=731
+                          Worker 1:  actual time=0.574..10.745 rows=7817 loops=1
+                            Buffers: shared hit=851
+Planning Time: 0.033 ms
+Execution Time: 13.979 ms

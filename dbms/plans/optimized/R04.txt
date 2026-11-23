@@ -1,0 +1,27 @@
+=== R04 run 1 ===
+Index Scan Backward using idx_transactions_status_time on transactions  (cost=0.42..275.47 rows=117 width=59) (actual time=0.033..0.044 rows=120.00 loops=1)
+  Index Cond: (((status)::text = 'PENDING'::text) AND (initiated_at < ('2026-06-30 23:59:00+05:30'::timestamp with time zone - '00:15:00'::interval)))
+  Index Searches: 1
+  Buffers: shared hit=3 read=3
+Planning:
+  Buffers: shared hit=284
+Planning Time: 0.495 ms
+Execution Time: 0.057 ms
+=== R04 run 2 ===
+Index Scan Backward using idx_transactions_status_time on transactions  (cost=0.42..275.47 rows=117 width=59) (actual time=0.015..0.027 rows=120.00 loops=1)
+  Index Cond: (((status)::text = 'PENDING'::text) AND (initiated_at < ('2026-06-30 23:59:00+05:30'::timestamp with time zone - '00:15:00'::interval)))
+  Index Searches: 1
+  Buffers: shared hit=6
+Planning:
+  Buffers: shared hit=284
+Planning Time: 0.491 ms
+Execution Time: 0.042 ms
+=== R04 run 3 ===
+Index Scan Backward using idx_transactions_status_time on transactions  (cost=0.42..275.47 rows=117 width=59) (actual time=0.017..0.028 rows=120.00 loops=1)
+  Index Cond: (((status)::text = 'PENDING'::text) AND (initiated_at < ('2026-06-30 23:59:00+05:30'::timestamp with time zone - '00:15:00'::interval)))
+  Index Searches: 1
+  Buffers: shared hit=6
+Planning:
+  Buffers: shared hit=284
+Planning Time: 0.563 ms
+Execution Time: 0.044 ms

@@ -1,0 +1,24 @@
+=== W01 run 1 ===
+Insert on transactions  (cost=0.00..0.01 rows=0 width=0) (actual time=0.351..0.351 rows=0.00 loops=1)
+  Buffers: shared hit=182 read=5 dirtied=7
+  ->  Result  (cost=0.00..0.01 rows=1 width=1324) (actual time=0.001..0.001 rows=1.00 loops=1)
+Planning Time: 0.040 ms
+Trigger for constraint transactions_payer_vpa_fkey: time=0.345 calls=1
+Trigger for constraint transactions_merchant_id_fkey: time=0.244 calls=1
+Execution Time: 0.953 ms
+=== W01 run 2 ===
+Insert on transactions  (cost=0.00..0.01 rows=0 width=0) (actual time=0.189..0.189 rows=0.00 loops=1)
+  Buffers: shared hit=188 dirtied=1
+  ->  Result  (cost=0.00..0.01 rows=1 width=1324) (actual time=0.001..0.001 rows=1.00 loops=1)
+Planning Time: 0.035 ms
+Trigger for constraint transactions_payer_vpa_fkey: time=0.288 calls=1
+Trigger for constraint transactions_merchant_id_fkey: time=0.165 calls=1
+Execution Time: 0.653 ms
+=== W01 run 3 ===
+Insert on transactions  (cost=0.00..0.01 rows=0 width=0) (actual time=0.184..0.184 rows=0.00 loops=1)
+  Buffers: shared hit=188 dirtied=1
+  ->  Result  (cost=0.00..0.01 rows=1 width=1324) (actual time=0.001..0.001 rows=1.00 loops=1)
+Planning Time: 0.033 ms
+Trigger for constraint transactions_payer_vpa_fkey: time=0.287 calls=1
+Trigger for constraint transactions_merchant_id_fkey: time=0.164 calls=1
+Execution Time: 0.645 ms

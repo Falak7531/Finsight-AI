@@ -1,0 +1,107 @@
+=== R07 run 1 ===
+Sort  (cost=1682.77..1682.92 rows=60 width=37) (actual time=11.737..11.740 rows=60 loops=1)
+  Output: ba.bank_name, t.failure_code, (count(*))
+  Sort Key: (count(*)) DESC
+  Sort Method: quicksort  Memory: 29kB
+  Buffers: shared hit=2769 read=1220
+  ->  HashAggregate  (cost=1680.39..1680.99 rows=60 width=37) (actual time=11.717..11.722 rows=60 loops=1)
+        Output: ba.bank_name, t.failure_code, count(*)
+        Group Key: ba.bank_name, t.failure_code
+        Batches: 1  Memory Usage: 24kB
+        Buffers: shared hit=2769 read=1220
+        ->  Nested Loop  (cost=1.13..1676.58 rows=508 width=29) (actual time=0.090..11.552 rows=498 loops=1)
+              Output: ba.bank_name, t.failure_code
+              Inner Unique: true
+              Buffers: shared hit=2769 read=1220
+              ->  Nested Loop  (cost=0.84..1511.57 rows=508 width=19) (actual time=0.065..8.012 rows=498 loops=1)
+                    Output: t.failure_code, v.account_id
+                    Inner Unique: true
+                    Buffers: shared hit=1648 read=847
+                    ->  Index Scan using idx_transactions_status_time on gpay.transactions t  (cost=0.42..397.39 rows=508 width=46) (actual time=0.026..1.610 rows=498 loops=1)
+                          Output: t.txn_id, t.upi_ref, t.txn_type, t.payer_vpa, t.payee_vpa, t.merchant_id, t.amount, t.note, t.initiated_at, t.completed_at, t.status, t.failure_code
+                          Index Cond: (((t.status)::text = 'FAILED'::text) AND (t.initiated_at >= '2026-06-23 18:30:00+00'::timestamp with time zone))
+                          Buffers: shared hit=335 read=168
+                    ->  Index Scan using vpas_pkey on gpay.vpas v  (cost=0.42..2.19 rows=1 width=35) (actual time=0.012..0.012 rows=1 loops=498)
+                          Output: v.vpa, v.user_id, v.account_id, v.is_active, v.created_at
+                          Index Cond: ((v.vpa)::text = (t.payer_vpa)::text)
+                          Buffers: shared hit=1313 read=679
+              ->  Index Scan using bank_accounts_pkey on gpay.bank_accounts ba  (cost=0.29..0.32 rows=1 width=18) (actual time=0.007..0.007 rows=1 loops=498)
+                    Output: ba.account_id, ba.user_id, ba.bank_name, ba.ifsc, ba.account_last4, ba.account_type, ba.is_primary, ba.linked_at
+                    Index Cond: (ba.account_id = v.account_id)
+                    Buffers: shared hit=1121 read=373
+Planning:
+  Buffers: shared hit=73 read=3
+Planning Time: 0.270 ms
+Execution Time: 11.753 ms
+
+=== R07 run 2 ===
+Sort  (cost=1682.77..1682.92 rows=60 width=37) (actual time=2.293..2.295 rows=60 loops=1)
+  Output: ba.bank_name, t.failure_code, (count(*))
+  Sort Key: (count(*)) DESC
+  Sort Method: quicksort  Memory: 29kB
+  Buffers: shared hit=3989
+  ->  HashAggregate  (cost=1680.39..1680.99 rows=60 width=37) (actual time=2.282..2.287 rows=60 loops=1)
+        Output: ba.bank_name, t.failure_code, count(*)
+        Group Key: ba.bank_name, t.failure_code
+        Batches: 1  Memory Usage: 24kB
+        Buffers: shared hit=3989
+        ->  Nested Loop  (cost=1.13..1676.58 rows=508 width=29) (actual time=0.014..2.202 rows=498 loops=1)
+              Output: ba.bank_name, t.failure_code
+              Inner Unique: true
+              Buffers: shared hit=3989
+              ->  Nested Loop  (cost=0.84..1511.57 rows=508 width=19) (actual time=0.011..1.665 rows=498 loops=1)
+                    Output: t.failure_code, v.account_id
+                    Inner Unique: true
+                    Buffers: shared hit=2495
+                    ->  Index Scan using idx_transactions_status_time on gpay.transactions t  (cost=0.42..397.39 rows=508 width=46) (actual time=0.007..0.165 rows=498 loops=1)
+                          Output: t.txn_id, t.upi_ref, t.txn_type, t.payer_vpa, t.payee_vpa, t.merchant_id, t.amount, t.note, t.initiated_at, t.completed_at, t.status, t.failure_code
+                          Index Cond: (((t.status)::text = 'FAILED'::text) AND (t.initiated_at >= '2026-06-23 18:30:00+00'::timestamp with time zone))
+                          Buffers: shared hit=503
+                    ->  Index Scan using vpas_pkey on gpay.vpas v  (cost=0.42..2.19 rows=1 width=35) (actual time=0.003..0.003 rows=1 loops=498)
+                          Output: v.vpa, v.user_id, v.account_id, v.is_active, v.created_at
+                          Index Cond: ((v.vpa)::text = (t.payer_vpa)::text)
+                          Buffers: shared hit=1992
+              ->  Index Scan using bank_accounts_pkey on gpay.bank_accounts ba  (cost=0.29..0.32 rows=1 width=18) (actual time=0.001..0.001 rows=1 loops=498)
+                    Output: ba.account_id, ba.user_id, ba.bank_name, ba.ifsc, ba.account_last4, ba.account_type, ba.is_primary, ba.linked_at
+                    Index Cond: (ba.account_id = v.account_id)
+                    Buffers: shared hit=1494
+Planning:
+  Buffers: shared hit=42
+Planning Time: 0.179 ms
+Execution Time: 2.308 ms
+
+=== R07 run 3 ===
+Sort  (cost=1682.77..1682.92 rows=60 width=37) (actual time=1.759..1.760 rows=60 loops=1)
+  Output: ba.bank_name, t.failure_code, (count(*))
+  Sort Key: (count(*)) DESC
+  Sort Method: quicksort  Memory: 29kB
+  Buffers: shared hit=3989
+  ->  HashAggregate  (cost=1680.39..1680.99 rows=60 width=37) (actual time=1.749..1.753 rows=60 loops=1)
+        Output: ba.bank_name, t.failure_code, count(*)
+        Group Key: ba.bank_name, t.failure_code
+        Batches: 1  Memory Usage: 24kB
+        Buffers: shared hit=3989
+        ->  Nested Loop  (cost=1.13..1676.58 rows=508 width=29) (actual time=0.011..1.682 rows=498 loops=1)
+              Output: ba.bank_name, t.failure_code
+              Inner Unique: true
+              Buffers: shared hit=3989
+              ->  Nested Loop  (cost=0.84..1511.57 rows=508 width=19) (actual time=0.010..1.325 rows=498 loops=1)
+                    Output: t.failure_code, v.account_id
+                    Inner Unique: true
+                    Buffers: shared hit=2495
+                    ->  Index Scan using idx_transactions_status_time on gpay.transactions t  (cost=0.42..397.39 rows=508 width=46) (actual time=0.005..0.110 rows=498 loops=1)
+                          Output: t.txn_id, t.upi_ref, t.txn_type, t.payer_vpa, t.payee_vpa, t.merchant_id, t.amount, t.note, t.initiated_at, t.completed_at, t.status, t.failure_code
+                          Index Cond: (((t.status)::text = 'FAILED'::text) AND (t.initiated_at >= '2026-06-23 18:30:00+00'::timestamp with time zone))
+                          Buffers: shared hit=503
+                    ->  Index Scan using vpas_pkey on gpay.vpas v  (cost=0.42..2.19 rows=1 width=35) (actual time=0.002..0.002 rows=1 loops=498)
+                          Output: v.vpa, v.user_id, v.account_id, v.is_active, v.created_at
+                          Index Cond: ((v.vpa)::text = (t.payer_vpa)::text)
+                          Buffers: shared hit=1992
+              ->  Index Scan using bank_accounts_pkey on gpay.bank_accounts ba  (cost=0.29..0.32 rows=1 width=18) (actual time=0.001..0.001 rows=1 loops=498)
+                    Output: ba.account_id, ba.user_id, ba.bank_name, ba.ifsc, ba.account_last4, ba.account_type, ba.is_primary, ba.linked_at
+                    Index Cond: (ba.account_id = v.account_id)
+                    Buffers: shared hit=1494
+Planning:
+  Buffers: shared hit=42
+Planning Time: 0.139 ms
+Execution Time: 1.770 ms

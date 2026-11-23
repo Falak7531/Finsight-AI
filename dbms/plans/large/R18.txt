@@ -1,0 +1,146 @@
+=== R18 run 1 ===
+Sort  (cost=28221.81..28266.00 rows=17675 width=56) (actual time=270.178..272.261 rows=51823 loops=1)
+  Output: u.user_id, u.full_name, u.kyc_status, (sum(t.amount))
+  Sort Key: (sum(t.amount)) DESC
+  Sort Method: quicksort  Memory: 5526kB
+  Buffers: shared hit=9621 read=2661 written=1
+  ->  HashAggregate  (cost=26179.50..26974.89 rows=17675 width=56) (actual time=247.866..259.901 rows=51823 loops=1)
+        Output: u.user_id, u.full_name, u.kyc_status, sum(t.amount)
+        Group Key: u.user_id
+        Filter: (sum(t.amount) >= '10000'::numeric)
+        Batches: 1  Memory Usage: 26641kB
+        Rows Removed by Filter: 654
+        Buffers: shared hit=9621 read=2661 written=1
+        ->  Hash Join  (cost=6104.43..24765.03 rows=282895 width=32) (actual time=24.945..179.570 rows=282529 loops=1)
+              Output: u.user_id, u.full_name, u.kyc_status, t.amount
+              Inner Unique: true
+              Hash Cond: (v.user_id = u.user_id)
+              Buffers: shared hit=9621 read=2661 written=1
+              ->  Hash Join  (cost=3402.48..20944.77 rows=426000 width=12) (actual time=13.559..122.981 rows=425546 loops=1)
+                    Output: v.user_id, t.amount
+                    Inner Unique: true
+                    Hash Cond: ((t.payer_vpa)::text = (v.vpa)::text)
+                    Buffers: shared hit=9621 read=1620 written=1
+                    ->  Seq Scan on gpay.transactions t  (cost=0.00..16424.00 rows=426000 width=39) (actual time=0.005..40.840 rows=425546 loops=1)
+                          Output: t.txn_id, t.upi_ref, t.txn_type, t.payer_vpa, t.payee_vpa, t.merchant_id, t.amount, t.note, t.initiated_at, t.completed_at, t.status, t.failure_code
+                          Filter: ((t.status)::text = 'SUCCESS'::text)
+                          Rows Removed by Filter: 74454
+                          Buffers: shared hit=9620 read=554
+                    ->  Hash  (cost=2104.99..2104.99 rows=103799 width=35) (actual time=13.540..13.541 rows=103800 loops=1)
+                          Output: v.user_id, v.vpa
+                          Buckets: 131072  Batches: 1  Memory Usage: 7898kB
+                          Buffers: shared hit=1 read=1066 written=1
+                          ->  Seq Scan on gpay.vpas v  (cost=0.00..2104.99 rows=103799 width=35) (actual time=0.003..6.919 rows=103800 loops=1)
+                                Output: v.user_id, v.vpa
+                                Buffers: shared hit=1 read=1066 written=1
+              ->  Hash  (cost=2039.12..2039.12 rows=53026 width=24) (actual time=11.377..11.377 rows=53091 loops=1)
+                    Output: u.user_id, u.full_name, u.kyc_status
+                    Buckets: 65536  Batches: 1  Memory Usage: 3473kB
+                    Buffers: shared read=1041
+                    ->  Seq Scan on gpay.users u  (cost=0.00..2039.12 rows=53026 width=24) (actual time=0.010..8.187 rows=53091 loops=1)
+                          Output: u.user_id, u.full_name, u.kyc_status
+                          Filter: ((u.kyc_status)::text <> 'VERIFIED'::text)
+                          Rows Removed by Filter: 26759
+                          Buffers: shared read=1041
+Planning:
+  Buffers: shared hit=43 read=8
+Planning Time: 0.229 ms
+Execution Time: 274.621 ms
+
+=== R18 run 2 ===
+Sort  (cost=28221.81..28266.00 rows=17675 width=56) (actual time=239.819..241.818 rows=51823 loops=1)
+  Output: u.user_id, u.full_name, u.kyc_status, (sum(t.amount))
+  Sort Key: (sum(t.amount)) DESC
+  Sort Method: quicksort  Memory: 5526kB
+  Buffers: shared hit=11760 read=522
+  ->  HashAggregate  (cost=26179.50..26974.89 rows=17675 width=56) (actual time=217.836..229.849 rows=51823 loops=1)
+        Output: u.user_id, u.full_name, u.kyc_status, sum(t.amount)
+        Group Key: u.user_id
+        Filter: (sum(t.amount) >= '10000'::numeric)
+        Batches: 1  Memory Usage: 26641kB
+        Rows Removed by Filter: 654
+        Buffers: shared hit=11760 read=522
+        ->  Hash Join  (cost=6104.43..24765.03 rows=282895 width=32) (actual time=18.210..156.023 rows=282529 loops=1)
+              Output: u.user_id, u.full_name, u.kyc_status, t.amount
+              Inner Unique: true
+              Hash Cond: (v.user_id = u.user_id)
+              Buffers: shared hit=11760 read=522
+              ->  Hash Join  (cost=3402.48..20944.77 rows=426000 width=12) (actual time=10.923..109.662 rows=425546 loops=1)
+                    Output: v.user_id, t.amount
+                    Inner Unique: true
+                    Hash Cond: ((t.payer_vpa)::text = (v.vpa)::text)
+                    Buffers: shared hit=10719 read=522
+                    ->  Seq Scan on gpay.transactions t  (cost=0.00..16424.00 rows=426000 width=39) (actual time=0.003..37.999 rows=425546 loops=1)
+                          Output: t.txn_id, t.upi_ref, t.txn_type, t.payer_vpa, t.payee_vpa, t.merchant_id, t.amount, t.note, t.initiated_at, t.completed_at, t.status, t.failure_code
+                          Filter: ((t.status)::text = 'SUCCESS'::text)
+                          Rows Removed by Filter: 74454
+                          Buffers: shared hit=9652 read=522
+                    ->  Hash  (cost=2104.99..2104.99 rows=103799 width=35) (actual time=10.910..10.911 rows=103800 loops=1)
+                          Output: v.user_id, v.vpa
+                          Buckets: 131072  Batches: 1  Memory Usage: 7898kB
+                          Buffers: shared hit=1067
+                          ->  Seq Scan on gpay.vpas v  (cost=0.00..2104.99 rows=103799 width=35) (actual time=0.001..4.415 rows=103800 loops=1)
+                                Output: v.user_id, v.vpa
+                                Buffers: shared hit=1067
+              ->  Hash  (cost=2039.12..2039.12 rows=53026 width=24) (actual time=7.283..7.283 rows=53091 loops=1)
+                    Output: u.user_id, u.full_name, u.kyc_status
+                    Buckets: 65536  Batches: 1  Memory Usage: 3473kB
+                    Buffers: shared hit=1041
+                    ->  Seq Scan on gpay.users u  (cost=0.00..2039.12 rows=53026 width=24) (actual time=0.003..4.503 rows=53091 loops=1)
+                          Output: u.user_id, u.full_name, u.kyc_status
+                          Filter: ((u.kyc_status)::text <> 'VERIFIED'::text)
+                          Rows Removed by Filter: 26759
+                          Buffers: shared hit=1041
+Planning:
+  Buffers: shared hit=48
+Planning Time: 0.206 ms
+Execution Time: 244.135 ms
+
+=== R18 run 3 ===
+Sort  (cost=28221.81..28266.00 rows=17675 width=56) (actual time=235.096..236.969 rows=51823 loops=1)
+  Output: u.user_id, u.full_name, u.kyc_status, (sum(t.amount))
+  Sort Key: (sum(t.amount)) DESC
+  Sort Method: quicksort  Memory: 5526kB
+  Buffers: shared hit=11792 read=490
+  ->  HashAggregate  (cost=26179.50..26974.89 rows=17675 width=56) (actual time=214.214..226.095 rows=51823 loops=1)
+        Output: u.user_id, u.full_name, u.kyc_status, sum(t.amount)
+        Group Key: u.user_id
+        Filter: (sum(t.amount) >= '10000'::numeric)
+        Batches: 1  Memory Usage: 26641kB
+        Rows Removed by Filter: 654
+        Buffers: shared hit=11792 read=490
+        ->  Hash Join  (cost=6104.43..24765.03 rows=282895 width=32) (actual time=17.937..152.282 rows=282529 loops=1)
+              Output: u.user_id, u.full_name, u.kyc_status, t.amount
+              Inner Unique: true
+              Hash Cond: (v.user_id = u.user_id)
+              Buffers: shared hit=11792 read=490
+              ->  Hash Join  (cost=3402.48..20944.77 rows=426000 width=12) (actual time=10.499..107.079 rows=425546 loops=1)
+                    Output: v.user_id, t.amount
+                    Inner Unique: true
+                    Hash Cond: ((t.payer_vpa)::text = (v.vpa)::text)
+                    Buffers: shared hit=10751 read=490
+                    ->  Seq Scan on gpay.transactions t  (cost=0.00..16424.00 rows=426000 width=39) (actual time=0.003..37.273 rows=425546 loops=1)
+                          Output: t.txn_id, t.upi_ref, t.txn_type, t.payer_vpa, t.payee_vpa, t.merchant_id, t.amount, t.note, t.initiated_at, t.completed_at, t.status, t.failure_code
+                          Filter: ((t.status)::text = 'SUCCESS'::text)
+                          Rows Removed by Filter: 74454
+                          Buffers: shared hit=9684 read=490
+                    ->  Hash  (cost=2104.99..2104.99 rows=103799 width=35) (actual time=10.488..10.489 rows=103800 loops=1)
+                          Output: v.user_id, v.vpa
+                          Buckets: 131072  Batches: 1  Memory Usage: 7898kB
+                          Buffers: shared hit=1067
+                          ->  Seq Scan on gpay.vpas v  (cost=0.00..2104.99 rows=103799 width=35) (actual time=0.001..4.316 rows=103800 loops=1)
+                                Output: v.user_id, v.vpa
+                                Buffers: shared hit=1067
+              ->  Hash  (cost=2039.12..2039.12 rows=53026 width=24) (actual time=7.434..7.434 rows=53091 loops=1)
+                    Output: u.user_id, u.full_name, u.kyc_status
+                    Buckets: 65536  Batches: 1  Memory Usage: 3473kB
+                    Buffers: shared hit=1041
+                    ->  Seq Scan on gpay.users u  (cost=0.00..2039.12 rows=53026 width=24) (actual time=0.003..4.569 rows=53091 loops=1)
+                          Output: u.user_id, u.full_name, u.kyc_status
+                          Filter: ((u.kyc_status)::text <> 'VERIFIED'::text)
+                          Rows Removed by Filter: 26759
+                          Buffers: shared hit=1041
+Planning:
+  Buffers: shared hit=48
+Planning Time: 0.174 ms
+Execution Time: 239.260 ms

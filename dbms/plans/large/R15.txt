@@ -1,0 +1,125 @@
+=== R15 run 1 ===
+Incremental Sort  (cost=9101.64..9337.00 rows=3000 width=64) (actual time=15.093..15.207 rows=100 loops=1)
+  Output: m.city_id, m.merchant_id, m.merchant_name, (sum(t.amount)), (rank() OVER (?))
+  Sort Key: m.city_id, (rank() OVER (?))
+  Presorted Key: m.city_id
+  Full-sort Groups: 3  Sort Method: quicksort  Average Memory: 28kB  Peak Memory: 28kB
+  Buffers: shared hit=23478 read=113
+  ->  WindowAgg  (cost=9100.68..9160.68 rows=3000 width=64) (actual time=15.012..15.190 rows=100 loops=1)
+        Output: m.city_id, m.merchant_id, m.merchant_name, (sum(t.amount)), rank() OVER (?)
+        Run Condition: (rank() OVER (?) <= 10)
+        Buffers: shared hit=23475 read=113
+        ->  Sort  (cost=9100.68..9108.18 rows=3000 width=56) (actual time=15.009..15.086 rows=2982 loops=1)
+              Output: m.city_id, m.merchant_id, (sum(t.amount)), m.merchant_name
+              Sort Key: m.city_id, (sum(t.amount)) DESC
+              Sort Method: quicksort  Memory: 319kB
+              Buffers: shared hit=23475 read=113
+              ->  HashAggregate  (cost=8889.92..8927.42 rows=3000 width=56) (actual time=13.866..14.161 rows=2982 loops=1)
+                    Output: m.city_id, m.merchant_id, sum(t.amount), m.merchant_name
+                    Group Key: m.merchant_id
+                    Batches: 1  Memory Usage: 2161kB
+                    Buffers: shared hit=23475 read=113
+                    ->  Hash Join  (cost=103.92..8771.66 rows=23652 width=32) (actual time=0.344..11.923 rows=14185 loops=1)
+                          Output: m.merchant_id, m.city_id, m.merchant_name, t.amount
+                          Inner Unique: true
+                          Hash Cond: (t.merchant_id = m.merchant_id)
+                          Buffers: shared hit=23475 read=113
+                          ->  Index Scan using idx_transactions_status_time on gpay.transactions t  (cost=0.42..8606.02 rows=23652 width=12) (actual time=0.020..9.259 rows=23440 loops=1)
+                                Output: t.txn_id, t.upi_ref, t.txn_type, t.payer_vpa, t.payee_vpa, t.merchant_id, t.amount, t.note, t.initiated_at, t.completed_at, t.status, t.failure_code
+                                Index Cond: (((t.status)::text = 'SUCCESS'::text) AND (t.initiated_at >= '2026-05-31 18:30:00+00'::timestamp with time zone) AND (t.initiated_at < '2026-06-30 18:30:00+00'::timestamp with time zone))
+                                Buffers: shared hit=23439 read=113
+                          ->  Hash  (cost=66.00..66.00 rows=3000 width=24) (actual time=0.321..0.321 rows=3000 loops=1)
+                                Output: m.city_id, m.merchant_id, m.merchant_name
+                                Buckets: 4096  Batches: 1  Memory Usage: 197kB
+                                Buffers: shared hit=36
+                                ->  Seq Scan on gpay.merchants m  (cost=0.00..66.00 rows=3000 width=24) (actual time=0.001..0.144 rows=3000 loops=1)
+                                      Output: m.city_id, m.merchant_id, m.merchant_name
+                                      Buffers: shared hit=36
+Planning:
+  Buffers: shared hit=22 read=6
+Planning Time: 0.103 ms
+Execution Time: 15.221 ms
+
+=== R15 run 2 ===
+Incremental Sort  (cost=9101.64..9337.00 rows=3000 width=64) (actual time=11.459..11.593 rows=100 loops=1)
+  Output: m.city_id, m.merchant_id, m.merchant_name, (sum(t.amount)), (rank() OVER (?))
+  Sort Key: m.city_id, (rank() OVER (?))
+  Presorted Key: m.city_id
+  Full-sort Groups: 3  Sort Method: quicksort  Average Memory: 28kB  Peak Memory: 28kB
+  Buffers: shared hit=23588
+  ->  WindowAgg  (cost=9100.68..9160.68 rows=3000 width=64) (actual time=11.371..11.579 rows=100 loops=1)
+        Output: m.city_id, m.merchant_id, m.merchant_name, (sum(t.amount)), rank() OVER (?)
+        Run Condition: (rank() OVER (?) <= 10)
+        Buffers: shared hit=23588
+        ->  Sort  (cost=9100.68..9108.18 rows=3000 width=56) (actual time=11.369..11.472 rows=2982 loops=1)
+              Output: m.city_id, m.merchant_id, (sum(t.amount)), m.merchant_name
+              Sort Key: m.city_id, (sum(t.amount)) DESC
+              Sort Method: quicksort  Memory: 319kB
+              Buffers: shared hit=23588
+              ->  HashAggregate  (cost=8889.92..8927.42 rows=3000 width=56) (actual time=10.188..10.494 rows=2982 loops=1)
+                    Output: m.city_id, m.merchant_id, sum(t.amount), m.merchant_name
+                    Group Key: m.merchant_id
+                    Batches: 1  Memory Usage: 2161kB
+                    Buffers: shared hit=23588
+                    ->  Hash Join  (cost=103.92..8771.66 rows=23652 width=32) (actual time=0.320..8.613 rows=14185 loops=1)
+                          Output: m.merchant_id, m.city_id, m.merchant_name, t.amount
+                          Inner Unique: true
+                          Hash Cond: (t.merchant_id = m.merchant_id)
+                          Buffers: shared hit=23588
+                          ->  Index Scan using idx_transactions_status_time on gpay.transactions t  (cost=0.42..8606.02 rows=23652 width=12) (actual time=0.008..5.929 rows=23440 loops=1)
+                                Output: t.txn_id, t.upi_ref, t.txn_type, t.payer_vpa, t.payee_vpa, t.merchant_id, t.amount, t.note, t.initiated_at, t.completed_at, t.status, t.failure_code
+                                Index Cond: (((t.status)::text = 'SUCCESS'::text) AND (t.initiated_at >= '2026-05-31 18:30:00+00'::timestamp with time zone) AND (t.initiated_at < '2026-06-30 18:30:00+00'::timestamp with time zone))
+                                Buffers: shared hit=23552
+                          ->  Hash  (cost=66.00..66.00 rows=3000 width=24) (actual time=0.309..0.310 rows=3000 loops=1)
+                                Output: m.city_id, m.merchant_id, m.merchant_name
+                                Buckets: 4096  Batches: 1  Memory Usage: 197kB
+                                Buffers: shared hit=36
+                                ->  Seq Scan on gpay.merchants m  (cost=0.00..66.00 rows=3000 width=24) (actual time=0.001..0.142 rows=3000 loops=1)
+                                      Output: m.city_id, m.merchant_id, m.merchant_name
+                                      Buffers: shared hit=36
+Planning:
+  Buffers: shared hit=21
+Planning Time: 0.089 ms
+Execution Time: 11.607 ms
+
+=== R15 run 3 ===
+Incremental Sort  (cost=9101.64..9337.00 rows=3000 width=64) (actual time=9.962..10.075 rows=100 loops=1)
+  Output: m.city_id, m.merchant_id, m.merchant_name, (sum(t.amount)), (rank() OVER (?))
+  Sort Key: m.city_id, (rank() OVER (?))
+  Presorted Key: m.city_id
+  Full-sort Groups: 3  Sort Method: quicksort  Average Memory: 28kB  Peak Memory: 28kB
+  Buffers: shared hit=23588
+  ->  WindowAgg  (cost=9100.68..9160.68 rows=3000 width=64) (actual time=9.884..10.062 rows=100 loops=1)
+        Output: m.city_id, m.merchant_id, m.merchant_name, (sum(t.amount)), rank() OVER (?)
+        Run Condition: (rank() OVER (?) <= 10)
+        Buffers: shared hit=23588
+        ->  Sort  (cost=9100.68..9108.18 rows=3000 width=56) (actual time=9.882..9.958 rows=2982 loops=1)
+              Output: m.city_id, m.merchant_id, (sum(t.amount)), m.merchant_name
+              Sort Key: m.city_id, (sum(t.amount)) DESC
+              Sort Method: quicksort  Memory: 319kB
+              Buffers: shared hit=23588
+              ->  HashAggregate  (cost=8889.92..8927.42 rows=3000 width=56) (actual time=8.748..9.030 rows=2982 loops=1)
+                    Output: m.city_id, m.merchant_id, sum(t.amount), m.merchant_name
+                    Group Key: m.merchant_id
+                    Batches: 1  Memory Usage: 2161kB
+                    Buffers: shared hit=23588
+                    ->  Hash Join  (cost=103.92..8771.66 rows=23652 width=32) (actual time=0.290..7.240 rows=14185 loops=1)
+                          Output: m.merchant_id, m.city_id, m.merchant_name, t.amount
+                          Inner Unique: true
+                          Hash Cond: (t.merchant_id = m.merchant_id)
+                          Buffers: shared hit=23588
+                          ->  Index Scan using idx_transactions_status_time on gpay.transactions t  (cost=0.42..8606.02 rows=23652 width=12) (actual time=0.007..4.920 rows=23440 loops=1)
+                                Output: t.txn_id, t.upi_ref, t.txn_type, t.payer_vpa, t.payee_vpa, t.merchant_id, t.amount, t.note, t.initiated_at, t.completed_at, t.status, t.failure_code
+                                Index Cond: (((t.status)::text = 'SUCCESS'::text) AND (t.initiated_at >= '2026-05-31 18:30:00+00'::timestamp with time zone) AND (t.initiated_at < '2026-06-30 18:30:00+00'::timestamp with time zone))
+                                Buffers: shared hit=23552
+                          ->  Hash  (cost=66.00..66.00 rows=3000 width=24) (actual time=0.280..0.280 rows=3000 loops=1)
+                                Output: m.city_id, m.merchant_id, m.merchant_name
+                                Buckets: 4096  Batches: 1  Memory Usage: 197kB
+                                Buffers: shared hit=36
+                                ->  Seq Scan on gpay.merchants m  (cost=0.00..66.00 rows=3000 width=24) (actual time=0.001..0.128 rows=3000 loops=1)
+                                      Output: m.city_id, m.merchant_id, m.merchant_name
+                                      Buffers: shared hit=36
+Planning:
+  Buffers: shared hit=21
+Planning Time: 0.090 ms
+Execution Time: 10.089 ms

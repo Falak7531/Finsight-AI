@@ -1,0 +1,73 @@
+=== R08 run 1 ===
+Sort  (cost=38870.13..39010.48 rows=56140 width=73) (actual time=403.955..403.956 rows=0 loops=1)
+  Output: payee_vpa, ((initiated_at)::date), (count(DISTINCT payer_vpa)), (sum(amount))
+  Sort Key: (count(DISTINCT transactions.payer_vpa)) DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=166938 read=4170 dirtied=1 written=558, temp read=1825 written=1826
+  ->  GroupAggregate  (cost=29665.37..34441.59 rows=56140 width=73) (actual time=403.954..403.955 rows=0 loops=1)
+        Output: payee_vpa, ((initiated_at)::date), count(DISTINCT payer_vpa), sum(amount)
+        Group Key: transactions.payee_vpa, ((transactions.initiated_at)::date)
+        Filter: (count(DISTINCT transactions.payer_vpa) >= 5)
+        Rows Removed by Filter: 169770
+        Buffers: shared hit=166938 read=4170 dirtied=1 written=558, temp read=1825 written=1826
+        ->  Sort  (cost=29665.37..30087.29 rows=168767 width=72) (actual time=318.730..339.308 rows=170023 loops=1)
+              Output: payee_vpa, ((initiated_at)::date), payer_vpa, amount
+              Sort Key: transactions.payee_vpa, ((transactions.initiated_at)::date)
+              Sort Method: external merge  Disk: 14600kB
+              Buffers: shared hit=166938 read=4170 dirtied=1 written=558, temp read=1825 written=1826
+              ->  Index Scan using idx_transactions_type_status_time on gpay.transactions  (cost=0.42..15012.45 rows=168767 width=72) (actual time=0.039..92.681 rows=170023 loops=1)
+                    Output: payee_vpa, (initiated_at)::date, payer_vpa, amount
+                    Index Cond: (((transactions.txn_type)::text = 'P2P'::text) AND ((transactions.status)::text = 'SUCCESS'::text))
+                    Buffers: shared hit=166935 read=4170 dirtied=1 written=558
+Planning:
+  Buffers: shared hit=14
+Planning Time: 0.042 ms
+Execution Time: 405.147 ms
+
+=== R08 run 2 ===
+Sort  (cost=38870.13..39010.48 rows=56140 width=73) (actual time=376.416..376.416 rows=0 loops=1)
+  Output: payee_vpa, ((initiated_at)::date), (count(DISTINCT payer_vpa)), (sum(amount))
+  Sort Key: (count(DISTINCT transactions.payer_vpa)) DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=170855 read=248 written=43, temp read=1825 written=1826
+  ->  GroupAggregate  (cost=29665.37..34441.59 rows=56140 width=73) (actual time=376.415..376.415 rows=0 loops=1)
+        Output: payee_vpa, ((initiated_at)::date), count(DISTINCT payer_vpa), sum(amount)
+        Group Key: transactions.payee_vpa, ((transactions.initiated_at)::date)
+        Filter: (count(DISTINCT transactions.payer_vpa) >= 5)
+        Rows Removed by Filter: 169770
+        Buffers: shared hit=170855 read=248 written=43, temp read=1825 written=1826
+        ->  Sort  (cost=29665.37..30087.29 rows=168767 width=72) (actual time=291.070..311.785 rows=170023 loops=1)
+              Output: payee_vpa, ((initiated_at)::date), payer_vpa, amount
+              Sort Key: transactions.payee_vpa, ((transactions.initiated_at)::date)
+              Sort Method: external merge  Disk: 14600kB
+              Buffers: shared hit=170855 read=248 written=43, temp read=1825 written=1826
+              ->  Index Scan using idx_transactions_type_status_time on gpay.transactions  (cost=0.42..15012.45 rows=168767 width=72) (actual time=0.027..67.193 rows=170023 loops=1)
+                    Output: payee_vpa, (initiated_at)::date, payer_vpa, amount
+                    Index Cond: (((transactions.txn_type)::text = 'P2P'::text) AND ((transactions.status)::text = 'SUCCESS'::text))
+                    Buffers: shared hit=170855 read=248 written=43
+Planning Time: 0.055 ms
+Execution Time: 377.404 ms
+
+=== R08 run 3 ===
+Sort  (cost=38870.13..39010.48 rows=56140 width=73) (actual time=372.387..372.388 rows=0 loops=1)
+  Output: payee_vpa, ((initiated_at)::date), (count(DISTINCT payer_vpa)), (sum(amount))
+  Sort Key: (count(DISTINCT transactions.payer_vpa)) DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=171103, temp read=1825 written=1826
+  ->  GroupAggregate  (cost=29665.37..34441.59 rows=56140 width=73) (actual time=372.386..372.386 rows=0 loops=1)
+        Output: payee_vpa, ((initiated_at)::date), count(DISTINCT payer_vpa), sum(amount)
+        Group Key: transactions.payee_vpa, ((transactions.initiated_at)::date)
+        Filter: (count(DISTINCT transactions.payer_vpa) >= 5)
+        Rows Removed by Filter: 169770
+        Buffers: shared hit=171103, temp read=1825 written=1826
+        ->  Sort  (cost=29665.37..30087.29 rows=168767 width=72) (actual time=286.776..307.647 rows=170023 loops=1)
+              Output: payee_vpa, ((initiated_at)::date), payer_vpa, amount
+              Sort Key: transactions.payee_vpa, ((transactions.initiated_at)::date)
+              Sort Method: external merge  Disk: 14600kB
+              Buffers: shared hit=171103, temp read=1825 written=1826
+              ->  Index Scan using idx_transactions_type_status_time on gpay.transactions  (cost=0.42..15012.45 rows=168767 width=72) (actual time=0.018..63.099 rows=170023 loops=1)
+                    Output: payee_vpa, (initiated_at)::date, payer_vpa, amount
+                    Index Cond: (((transactions.txn_type)::text = 'P2P'::text) AND ((transactions.status)::text = 'SUCCESS'::text))
+                    Buffers: shared hit=171103
+Planning Time: 0.062 ms
+Execution Time: 373.338 ms

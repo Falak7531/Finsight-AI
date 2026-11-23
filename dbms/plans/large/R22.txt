@@ -1,0 +1,83 @@
+=== R22 run 1 ===
+Sort  (cost=4788.98..4788.99 rows=1 width=52) (actual time=14.264..14.265 rows=3 loops=1)
+  Output: ba.bank_name, ba.account_last4, ba.is_primary, v.vpa, v.is_active
+  Sort Key: ba.is_primary DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=567 read=1619 written=234
+  ->  Hash Right Join  (cost=2411.50..4788.97 rows=1 width=52) (actual time=7.343..14.258 rows=3 loops=1)
+        Output: ba.bank_name, ba.account_last4, ba.is_primary, v.vpa, v.is_active
+        Inner Unique: true
+        Hash Cond: (v.account_id = ba.account_id)
+        Buffers: shared hit=562 read=1619 written=234
+        ->  Seq Scan on gpay.vpas v  (cost=0.00..2104.99 rows=103799 width=36) (actual time=0.004..4.646 rows=103800 loops=1)
+              Output: v.vpa, v.user_id, v.account_id, v.is_active, v.created_at
+              Buffers: shared hit=562 read=505
+        ->  Hash  (cost=2411.49..2411.49 rows=1 width=24) (actual time=5.545..5.545 rows=2 loops=1)
+              Output: ba.bank_name, ba.account_last4, ba.is_primary, ba.account_id
+              Buckets: 1024  Batches: 1  Memory Usage: 9kB
+              Buffers: shared read=1114 written=234
+              ->  Seq Scan on gpay.bank_accounts ba  (cost=0.00..2411.49 rows=1 width=24) (actual time=1.148..5.544 rows=2 loops=1)
+                    Output: ba.bank_name, ba.account_last4, ba.is_primary, ba.account_id
+                    Filter: (ba.user_id = 15177)
+                    Rows Removed by Filter: 103797
+                    Buffers: shared read=1114 written=234
+Planning:
+  Buffers: shared hit=12 read=6
+Planning Time: 0.071 ms
+Execution Time: 14.275 ms
+
+=== R22 run 2 ===
+Sort  (cost=4788.98..4788.99 rows=1 width=52) (actual time=9.784..9.785 rows=3 loops=1)
+  Output: ba.bank_name, ba.account_last4, ba.is_primary, v.vpa, v.is_active
+  Sort Key: ba.is_primary DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=2181
+  ->  Hash Right Join  (cost=2411.50..4788.97 rows=1 width=52) (actual time=3.882..9.782 rows=3 loops=1)
+        Output: ba.bank_name, ba.account_last4, ba.is_primary, v.vpa, v.is_active
+        Inner Unique: true
+        Hash Cond: (v.account_id = ba.account_id)
+        Buffers: shared hit=2181
+        ->  Seq Scan on gpay.vpas v  (cost=0.00..2104.99 rows=103799 width=36) (actual time=0.001..3.364 rows=103800 loops=1)
+              Output: v.vpa, v.user_id, v.account_id, v.is_active, v.created_at
+              Buffers: shared hit=1067
+        ->  Hash  (cost=2411.49..2411.49 rows=1 width=24) (actual time=2.536..2.537 rows=2 loops=1)
+              Output: ba.bank_name, ba.account_last4, ba.is_primary, ba.account_id
+              Buckets: 1024  Batches: 1  Memory Usage: 9kB
+              Buffers: shared hit=1114
+              ->  Seq Scan on gpay.bank_accounts ba  (cost=0.00..2411.49 rows=1 width=24) (actual time=0.506..2.535 rows=2 loops=1)
+                    Output: ba.bank_name, ba.account_last4, ba.is_primary, ba.account_id
+                    Filter: (ba.user_id = 15177)
+                    Rows Removed by Filter: 103797
+                    Buffers: shared hit=1114
+Planning:
+  Buffers: shared hit=6
+Planning Time: 0.049 ms
+Execution Time: 9.790 ms
+
+=== R22 run 3 ===
+Sort  (cost=4788.98..4788.99 rows=1 width=52) (actual time=9.329..9.329 rows=3 loops=1)
+  Output: ba.bank_name, ba.account_last4, ba.is_primary, v.vpa, v.is_active
+  Sort Key: ba.is_primary DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=2181
+  ->  Hash Right Join  (cost=2411.50..4788.97 rows=1 width=52) (actual time=3.459..9.328 rows=3 loops=1)
+        Output: ba.bank_name, ba.account_last4, ba.is_primary, v.vpa, v.is_active
+        Inner Unique: true
+        Hash Cond: (v.account_id = ba.account_id)
+        Buffers: shared hit=2181
+        ->  Seq Scan on gpay.vpas v  (cost=0.00..2104.99 rows=103799 width=36) (actual time=0.001..3.374 rows=103800 loops=1)
+              Output: v.vpa, v.user_id, v.account_id, v.is_active, v.created_at
+              Buffers: shared hit=1067
+        ->  Hash  (cost=2411.49..2411.49 rows=1 width=24) (actual time=2.096..2.096 rows=2 loops=1)
+              Output: ba.bank_name, ba.account_last4, ba.is_primary, ba.account_id
+              Buckets: 1024  Batches: 1  Memory Usage: 9kB
+              Buffers: shared hit=1114
+              ->  Seq Scan on gpay.bank_accounts ba  (cost=0.00..2411.49 rows=1 width=24) (actual time=0.377..2.095 rows=2 loops=1)
+                    Output: ba.bank_name, ba.account_last4, ba.is_primary, ba.account_id
+                    Filter: (ba.user_id = 15177)
+                    Rows Removed by Filter: 103797
+                    Buffers: shared hit=1114
+Planning:
+  Buffers: shared hit=6
+Planning Time: 0.031 ms
+Execution Time: 9.333 ms

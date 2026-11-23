@@ -1,0 +1,50 @@
+=== R13 run 1 ===
+Nested Loop Anti Join  (cost=0.42..1541.80 rows=3 width=24) (actual time=9.799..9.799 rows=0 loops=1)
+  Output: m.merchant_id, m.merchant_name, m.onboarded_on
+  Buffers: shared hit=7132 read=1906
+  ->  Seq Scan on gpay.merchants m  (cost=0.00..66.00 rows=3000 width=24) (actual time=0.008..0.248 rows=3000 loops=1)
+        Output: m.merchant_id, m.merchant_name, m.mcc, m.merchant_vpa, m.city_id, m.is_verified, m.onboarded_on
+        Buffers: shared read=36
+  ->  Index Only Scan using idx_transactions_merchant_status_time on gpay.transactions t  (cost=0.42..2.95 rows=101 width=4) (actual time=0.003..0.003 rows=1 loops=3000)
+        Output: t.merchant_id, t.status, t.initiated_at
+        Index Cond: (t.merchant_id = m.merchant_id)
+        Heap Fetches: 1
+        Buffers: shared hit=7132 read=1870
+Planning:
+  Buffers: shared hit=7 read=11
+Planning Time: 0.101 ms
+Execution Time: 9.805 ms
+
+=== R13 run 2 ===
+Nested Loop Anti Join  (cost=0.42..1541.80 rows=3 width=24) (actual time=3.648..3.649 rows=0 loops=1)
+  Output: m.merchant_id, m.merchant_name, m.onboarded_on
+  Buffers: shared hit=9038
+  ->  Seq Scan on gpay.merchants m  (cost=0.00..66.00 rows=3000 width=24) (actual time=0.001..0.106 rows=3000 loops=1)
+        Output: m.merchant_id, m.merchant_name, m.mcc, m.merchant_vpa, m.city_id, m.is_verified, m.onboarded_on
+        Buffers: shared hit=36
+  ->  Index Only Scan using idx_transactions_merchant_status_time on gpay.transactions t  (cost=0.42..2.95 rows=101 width=4) (actual time=0.001..0.001 rows=1 loops=3000)
+        Output: t.merchant_id, t.status, t.initiated_at
+        Index Cond: (t.merchant_id = m.merchant_id)
+        Heap Fetches: 1
+        Buffers: shared hit=9002
+Planning:
+  Buffers: shared hit=15
+Planning Time: 0.055 ms
+Execution Time: 3.652 ms
+
+=== R13 run 3 ===
+Nested Loop Anti Join  (cost=0.42..1541.80 rows=3 width=24) (actual time=3.103..3.103 rows=0 loops=1)
+  Output: m.merchant_id, m.merchant_name, m.onboarded_on
+  Buffers: shared hit=9038
+  ->  Seq Scan on gpay.merchants m  (cost=0.00..66.00 rows=3000 width=24) (actual time=0.001..0.100 rows=3000 loops=1)
+        Output: m.merchant_id, m.merchant_name, m.mcc, m.merchant_vpa, m.city_id, m.is_verified, m.onboarded_on
+        Buffers: shared hit=36
+  ->  Index Only Scan using idx_transactions_merchant_status_time on gpay.transactions t  (cost=0.42..2.95 rows=101 width=4) (actual time=0.001..0.001 rows=1 loops=3000)
+        Output: t.merchant_id, t.status, t.initiated_at
+        Index Cond: (t.merchant_id = m.merchant_id)
+        Heap Fetches: 1
+        Buffers: shared hit=9002
+Planning:
+  Buffers: shared hit=15
+Planning Time: 0.041 ms
+Execution Time: 3.107 ms

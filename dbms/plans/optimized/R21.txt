@@ -1,0 +1,36 @@
+=== R21 run 1 ===
+Limit  (cost=0.28..21.77 rows=25 width=47) (actual time=0.408..0.419 rows=25.00 loops=1)
+  Buffers: shared hit=787 read=6
+  ->  Index Scan using idx_merchants_name on merchants  (cost=0.28..260.78 rows=303 width=47) (actual time=0.407..0.418 rows=25.00 loops=1)
+        Filter: ((merchant_name)::text ~~* '%chai%'::text)
+        Rows Removed by Filter: 900
+        Index Searches: 1
+        Buffers: shared hit=787 read=6
+Planning:
+  Buffers: shared hit=129
+Planning Time: 0.312 ms
+Execution Time: 0.429 ms
+=== R21 run 2 ===
+Limit  (cost=0.28..21.77 rows=25 width=47) (actual time=0.393..0.404 rows=25.00 loops=1)
+  Buffers: shared hit=793
+  ->  Index Scan using idx_merchants_name on merchants  (cost=0.28..260.78 rows=303 width=47) (actual time=0.392..0.403 rows=25.00 loops=1)
+        Filter: ((merchant_name)::text ~~* '%chai%'::text)
+        Rows Removed by Filter: 900
+        Index Searches: 1
+        Buffers: shared hit=793
+Planning:
+  Buffers: shared hit=127
+Planning Time: 0.325 ms
+Execution Time: 0.414 ms
+=== R21 run 3 ===
+Limit  (cost=0.28..21.77 rows=25 width=47) (actual time=0.415..0.427 rows=25.00 loops=1)
+  Buffers: shared hit=793
+  ->  Index Scan using idx_merchants_name on merchants  (cost=0.28..260.78 rows=303 width=47) (actual time=0.414..0.425 rows=25.00 loops=1)
+        Filter: ((merchant_name)::text ~~* '%chai%'::text)
+        Rows Removed by Filter: 900
+        Index Searches: 1
+        Buffers: shared hit=793
+Planning:
+  Buffers: shared hit=127
+Planning Time: 0.315 ms
+Execution Time: 0.437 ms

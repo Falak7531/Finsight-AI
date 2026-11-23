@@ -1,0 +1,29 @@
+=== W01 run 1 ===
+Insert on gpay.transactions  (cost=0.00..0.01 rows=0 width=0) (actual time=0.091..0.091 rows=0 loops=1)
+  Buffers: shared hit=14 read=13 dirtied=8
+  ->  Result  (cost=0.00..0.01 rows=1 width=1324) (actual time=0.001..0.001 rows=1 loops=1)
+        Output: '90000001'::bigint, '999900000001'::character varying(12), 'P2M'::character varying(10), 'aditya.gupta15177@okhdfcbank'::character varying(255), 'balaji2@okbizaxis'::character varying(255), 2, 250.00::numeric(12,2), NULL::text, '2026-07-01 03:30:00+00'::timestamp with time zone, NULL::timestamp with time zone, 'PENDING'::character varying(20), NULL::character varying(30)
+Planning Time: 0.013 ms
+Trigger RI_ConstraintTrigger_c_19903 for constraint transactions_payer_vpa_fkey: time=0.100 calls=1
+Trigger RI_ConstraintTrigger_c_19908 for constraint transactions_merchant_id_fkey: time=0.033 calls=1
+Execution Time: 0.230 ms
+
+=== W01 run 2 ===
+Insert on gpay.transactions  (cost=0.00..0.01 rows=0 width=0) (actual time=0.022..0.022 rows=0 loops=1)
+  Buffers: shared hit=25
+  ->  Result  (cost=0.00..0.01 rows=1 width=1324) (actual time=0.000..0.000 rows=1 loops=1)
+        Output: '90000001'::bigint, '999900000001'::character varying(12), 'P2M'::character varying(10), 'aditya.gupta15177@okhdfcbank'::character varying(255), 'balaji2@okbizaxis'::character varying(255), 2, 250.00::numeric(12,2), NULL::text, '2026-07-01 03:30:00+00'::timestamp with time zone, NULL::timestamp with time zone, 'PENDING'::character varying(20), NULL::character varying(30)
+Planning Time: 0.012 ms
+Trigger RI_ConstraintTrigger_c_19903 for constraint transactions_payer_vpa_fkey: time=0.026 calls=1
+Trigger RI_ConstraintTrigger_c_19908 for constraint transactions_merchant_id_fkey: time=0.012 calls=1
+Execution Time: 0.069 ms
+
+=== W01 run 3 ===
+Insert on gpay.transactions  (cost=0.00..0.01 rows=0 width=0) (actual time=0.029..0.030 rows=0 loops=1)
+  Buffers: shared hit=25
+  ->  Result  (cost=0.00..0.01 rows=1 width=1324) (actual time=0.000..0.000 rows=1 loops=1)
+        Output: '90000001'::bigint, '999900000001'::character varying(12), 'P2M'::character varying(10), 'aditya.gupta15177@okhdfcbank'::character varying(255), 'balaji2@okbizaxis'::character varying(255), 2, 250.00::numeric(12,2), NULL::text, '2026-07-01 03:30:00+00'::timestamp with time zone, NULL::timestamp with time zone, 'PENDING'::character varying(20), NULL::character varying(30)
+Planning Time: 0.006 ms
+Trigger RI_ConstraintTrigger_c_19903 for constraint transactions_payer_vpa_fkey: time=0.018 calls=1
+Trigger RI_ConstraintTrigger_c_19908 for constraint transactions_merchant_id_fkey: time=0.010 calls=1
+Execution Time: 0.062 ms

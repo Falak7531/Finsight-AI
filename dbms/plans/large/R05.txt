@@ -1,0 +1,56 @@
+=== R05 run 1 ===
+GroupAggregate  (cost=2.66..2.69 rows=1 width=72) (actual time=0.022..0.022 rows=0 loops=1)
+  Output: (EXTRACT(hour FROM initiated_at)), count(*), sum(amount)
+  Group Key: (EXTRACT(hour FROM transactions.initiated_at))
+  Buffers: shared hit=2 read=1
+  ->  Sort  (cost=2.66..2.66 rows=1 width=40) (actual time=0.021..0.021 rows=0 loops=1)
+        Output: (EXTRACT(hour FROM initiated_at)), amount
+        Sort Key: (EXTRACT(hour FROM transactions.initiated_at))
+        Sort Method: quicksort  Memory: 25kB
+        Buffers: shared hit=2 read=1
+        ->  Index Scan using idx_transactions_merchant_status_time on gpay.transactions  (cost=0.42..2.65 rows=1 width=40) (actual time=0.018..0.018 rows=0 loops=1)
+              Output: EXTRACT(hour FROM initiated_at), amount
+              Index Cond: ((transactions.merchant_id = 2) AND ((transactions.status)::text = 'SUCCESS'::text) AND (transactions.initiated_at >= '2026-06-28 18:30:00+00'::timestamp with time zone) AND (transactions.initiated_at < '2026-06-29 18:30:00+00'::timestamp with time zone))
+              Buffers: shared hit=2 read=1
+Planning:
+  Buffers: shared hit=22 read=1
+Planning Time: 0.073 ms
+Execution Time: 0.034 ms
+
+=== R05 run 2 ===
+GroupAggregate  (cost=2.66..2.69 rows=1 width=72) (actual time=0.004..0.004 rows=0 loops=1)
+  Output: (EXTRACT(hour FROM initiated_at)), count(*), sum(amount)
+  Group Key: (EXTRACT(hour FROM transactions.initiated_at))
+  Buffers: shared hit=3
+  ->  Sort  (cost=2.66..2.66 rows=1 width=40) (actual time=0.004..0.004 rows=0 loops=1)
+        Output: (EXTRACT(hour FROM initiated_at)), amount
+        Sort Key: (EXTRACT(hour FROM transactions.initiated_at))
+        Sort Method: quicksort  Memory: 25kB
+        Buffers: shared hit=3
+        ->  Index Scan using idx_transactions_merchant_status_time on gpay.transactions  (cost=0.42..2.65 rows=1 width=40) (actual time=0.003..0.003 rows=0 loops=1)
+              Output: EXTRACT(hour FROM initiated_at), amount
+              Index Cond: ((transactions.merchant_id = 2) AND ((transactions.status)::text = 'SUCCESS'::text) AND (transactions.initiated_at >= '2026-06-28 18:30:00+00'::timestamp with time zone) AND (transactions.initiated_at < '2026-06-29 18:30:00+00'::timestamp with time zone))
+              Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=8
+Planning Time: 0.048 ms
+Execution Time: 0.010 ms
+
+=== R05 run 3 ===
+GroupAggregate  (cost=2.66..2.69 rows=1 width=72) (actual time=0.003..0.003 rows=0 loops=1)
+  Output: (EXTRACT(hour FROM initiated_at)), count(*), sum(amount)
+  Group Key: (EXTRACT(hour FROM transactions.initiated_at))
+  Buffers: shared hit=3
+  ->  Sort  (cost=2.66..2.66 rows=1 width=40) (actual time=0.003..0.003 rows=0 loops=1)
+        Output: (EXTRACT(hour FROM initiated_at)), amount
+        Sort Key: (EXTRACT(hour FROM transactions.initiated_at))
+        Sort Method: quicksort  Memory: 25kB
+        Buffers: shared hit=3
+        ->  Index Scan using idx_transactions_merchant_status_time on gpay.transactions  (cost=0.42..2.65 rows=1 width=40) (actual time=0.002..0.002 rows=0 loops=1)
+              Output: EXTRACT(hour FROM initiated_at), amount
+              Index Cond: ((transactions.merchant_id = 2) AND ((transactions.status)::text = 'SUCCESS'::text) AND (transactions.initiated_at >= '2026-06-28 18:30:00+00'::timestamp with time zone) AND (transactions.initiated_at < '2026-06-29 18:30:00+00'::timestamp with time zone))
+              Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=8
+Planning Time: 0.041 ms
+Execution Time: 0.007 ms

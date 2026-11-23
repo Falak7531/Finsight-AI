@@ -1,0 +1,23 @@
+=== R11 run 1 ===
+Index Scan using idx_rewards_status_expires on gpay.rewards  (cost=0.42..2305.66 rows=32690 width=20) (actual time=0.026..8.762 rows=25020 loops=1)
+  Output: reward_id, user_id, expires_at
+  Index Cond: (((rewards.status)::text = 'UNSCRATCHED'::text) AND (rewards.expires_at < '2026-07-03 18:30:00+00'::timestamp with time zone))
+  Buffers: shared hit=23939 read=1226 dirtied=1045 written=17
+Planning Time: 0.016 ms
+Execution Time: 9.257 ms
+
+=== R11 run 2 ===
+Index Scan using idx_rewards_status_expires on gpay.rewards  (cost=0.42..2305.66 rows=32690 width=20) (actual time=0.011..4.450 rows=25020 loops=1)
+  Output: reward_id, user_id, expires_at
+  Index Cond: (((rewards.status)::text = 'UNSCRATCHED'::text) AND (rewards.expires_at < '2026-07-03 18:30:00+00'::timestamp with time zone))
+  Buffers: shared hit=25161 read=4
+Planning Time: 0.021 ms
+Execution Time: 4.949 ms
+
+=== R11 run 3 ===
+Index Scan using idx_rewards_status_expires on gpay.rewards  (cost=0.42..2305.66 rows=32690 width=20) (actual time=0.006..4.319 rows=25020 loops=1)
+  Output: reward_id, user_id, expires_at
+  Index Cond: (((rewards.status)::text = 'UNSCRATCHED'::text) AND (rewards.expires_at < '2026-07-03 18:30:00+00'::timestamp with time zone))
+  Buffers: shared hit=25165
+Planning Time: 0.015 ms
+Execution Time: 4.818 ms

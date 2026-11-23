@@ -1,0 +1,29 @@
+=== W04 run 1 ===
+Update on gpay.rewards  (cost=0.42..2305.66 rows=0 width=0) (actual time=109.145..109.146 rows=0 loops=1)
+  Buffers: shared hit=398527 read=2921 dirtied=3217 written=512
+  ->  Index Scan using idx_rewards_status_expires on gpay.rewards  (cost=0.42..2305.66 rows=32690 width=84) (actual time=0.023..10.727 rows=25020 loops=1)
+        Output: 'EXPIRED'::character varying(30), ctid
+        Index Cond: (((rewards.status)::text = 'UNSCRATCHED'::text) AND (rewards.expires_at < '2026-07-03 18:30:00+00'::timestamp with time zone))
+        Buffers: shared hit=23930 read=1235 written=25
+Planning Time: 0.012 ms
+Execution Time: 109.151 ms
+
+=== W04 run 2 ===
+Update on gpay.rewards  (cost=0.42..2821.96 rows=0 width=0) (actual time=107.506..107.506 rows=0 loops=1)
+  Buffers: shared hit=412217 read=5 dirtied=414 written=414
+  ->  Index Scan using idx_rewards_status_expires on gpay.rewards  (cost=0.42..2821.96 rows=40377 width=84) (actual time=0.013..8.538 rows=25020 loops=1)
+        Output: 'EXPIRED'::character varying(30), ctid
+        Index Cond: (((rewards.status)::text = 'UNSCRATCHED'::text) AND (rewards.expires_at < '2026-07-03 18:30:00+00'::timestamp with time zone))
+        Buffers: shared hit=25160 read=5
+Planning Time: 0.030 ms
+Execution Time: 107.515 ms
+
+=== W04 run 3 ===
+Update on gpay.rewards  (cost=0.42..3322.35 rows=0 width=0) (actual time=117.510..117.511 rows=0 loops=1)
+  Buffers: shared hit=440833 dirtied=322 written=323
+  ->  Index Scan using idx_rewards_status_expires on gpay.rewards  (cost=0.42..3322.35 rows=48041 width=84) (actual time=0.012..8.311 rows=25020 loops=1)
+        Output: 'EXPIRED'::character varying(30), ctid
+        Index Cond: (((rewards.status)::text = 'UNSCRATCHED'::text) AND (rewards.expires_at < '2026-07-03 18:30:00+00'::timestamp with time zone))
+        Buffers: shared hit=25165
+Planning Time: 0.036 ms
+Execution Time: 117.521 ms

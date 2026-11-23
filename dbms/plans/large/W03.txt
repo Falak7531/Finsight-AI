@@ -1,0 +1,53 @@
+=== W03 run 1 ===
+Update on gpay.rewards  (cost=3.07..5.29 rows=0 width=0) (actual time=0.009..0.009 rows=0 loops=1)
+  Buffers: shared read=3
+  InitPlan 1 (returns $1)
+    ->  Aggregate  (cost=2.64..2.65 rows=1 width=8) (actual time=0.008..0.008 rows=1 loops=1)
+          Output: min(rewards_1.reward_id)
+          Buffers: shared read=3
+          ->  Index Scan using idx_rewards_user_status_expires on gpay.rewards rewards_1  (cost=0.42..2.64 rows=1 width=8) (actual time=0.008..0.008 rows=0 loops=1)
+                Output: rewards_1.reward_id, rewards_1.user_id, rewards_1.txn_id, rewards_1.reward_type, rewards_1.amount, rewards_1.status, rewards_1.issued_at, rewards_1.expires_at, rewards_1.credited_at
+                Index Cond: ((rewards_1.user_id = 15177) AND ((rewards_1.status)::text = 'UNSCRATCHED'::text))
+                Buffers: shared read=3
+  ->  Index Scan using rewards_pkey on gpay.rewards  (cost=0.42..2.64 rows=1 width=92) (actual time=0.009..0.009 rows=0 loops=1)
+        Output: 'CREDITED'::character varying(30), '2026-07-01 03:35:00+00'::timestamp with time zone, rewards.ctid
+        Index Cond: (rewards.reward_id = $1)
+        Buffers: shared read=3
+Planning Time: 0.030 ms
+Execution Time: 0.018 ms
+
+=== W03 run 2 ===
+Update on gpay.rewards  (cost=3.07..5.29 rows=0 width=0) (actual time=0.003..0.003 rows=0 loops=1)
+  Buffers: shared hit=3
+  InitPlan 1 (returns $1)
+    ->  Aggregate  (cost=2.64..2.65 rows=1 width=8) (actual time=0.002..0.002 rows=1 loops=1)
+          Output: min(rewards_1.reward_id)
+          Buffers: shared hit=3
+          ->  Index Scan using idx_rewards_user_status_expires on gpay.rewards rewards_1  (cost=0.42..2.64 rows=1 width=8) (actual time=0.002..0.002 rows=0 loops=1)
+                Output: rewards_1.reward_id, rewards_1.user_id, rewards_1.txn_id, rewards_1.reward_type, rewards_1.amount, rewards_1.status, rewards_1.issued_at, rewards_1.expires_at, rewards_1.credited_at
+                Index Cond: ((rewards_1.user_id = 15177) AND ((rewards_1.status)::text = 'UNSCRATCHED'::text))
+                Buffers: shared hit=3
+  ->  Index Scan using rewards_pkey on gpay.rewards  (cost=0.42..2.64 rows=1 width=92) (actual time=0.003..0.003 rows=0 loops=1)
+        Output: 'CREDITED'::character varying(30), '2026-07-01 03:35:00+00'::timestamp with time zone, rewards.ctid
+        Index Cond: (rewards.reward_id = $1)
+        Buffers: shared hit=3
+Planning Time: 0.029 ms
+Execution Time: 0.008 ms
+
+=== W03 run 3 ===
+Update on gpay.rewards  (cost=3.07..5.29 rows=0 width=0) (actual time=0.002..0.002 rows=0 loops=1)
+  Buffers: shared hit=3
+  InitPlan 1 (returns $1)
+    ->  Aggregate  (cost=2.64..2.65 rows=1 width=8) (actual time=0.001..0.002 rows=1 loops=1)
+          Output: min(rewards_1.reward_id)
+          Buffers: shared hit=3
+          ->  Index Scan using idx_rewards_user_status_expires on gpay.rewards rewards_1  (cost=0.42..2.64 rows=1 width=8) (actual time=0.001..0.001 rows=0 loops=1)
+                Output: rewards_1.reward_id, rewards_1.user_id, rewards_1.txn_id, rewards_1.reward_type, rewards_1.amount, rewards_1.status, rewards_1.issued_at, rewards_1.expires_at, rewards_1.credited_at
+                Index Cond: ((rewards_1.user_id = 15177) AND ((rewards_1.status)::text = 'UNSCRATCHED'::text))
+                Buffers: shared hit=3
+  ->  Index Scan using rewards_pkey on gpay.rewards  (cost=0.42..2.64 rows=1 width=92) (actual time=0.002..0.002 rows=0 loops=1)
+        Output: 'CREDITED'::character varying(30), '2026-07-01 03:35:00+00'::timestamp with time zone, rewards.ctid
+        Index Cond: (rewards.reward_id = $1)
+        Buffers: shared hit=3
+Planning Time: 0.022 ms
+Execution Time: 0.006 ms

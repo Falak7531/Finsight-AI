@@ -1,0 +1,25 @@
+=== R24 run 1 ===
+Index Scan using transactions_upi_ref_key on gpay.transactions  (cost=0.42..2.64 rows=1 width=114) (actual time=0.020..0.020 rows=0 loops=1)
+  Output: txn_id, payer_vpa, payee_vpa, amount, status, failure_code, initiated_at, completed_at
+  Index Cond: ((transactions.upi_ref)::text = '600977648064'::text)
+  Buffers: shared read=3
+Planning:
+  Buffers: shared hit=2 read=1
+Planning Time: 0.058 ms
+Execution Time: 0.025 ms
+
+=== R24 run 2 ===
+Index Scan using transactions_upi_ref_key on gpay.transactions  (cost=0.42..2.64 rows=1 width=114) (actual time=0.004..0.004 rows=0 loops=1)
+  Output: txn_id, payer_vpa, payee_vpa, amount, status, failure_code, initiated_at, completed_at
+  Index Cond: ((transactions.upi_ref)::text = '600977648064'::text)
+  Buffers: shared hit=3
+Planning Time: 0.020 ms
+Execution Time: 0.006 ms
+
+=== R24 run 3 ===
+Index Scan using transactions_upi_ref_key on gpay.transactions  (cost=0.42..2.64 rows=1 width=114) (actual time=0.002..0.002 rows=0 loops=1)
+  Output: txn_id, payer_vpa, payee_vpa, amount, status, failure_code, initiated_at, completed_at
+  Index Cond: ((transactions.upi_ref)::text = '600977648064'::text)
+  Buffers: shared hit=3
+Planning Time: 0.012 ms
+Execution Time: 0.004 ms

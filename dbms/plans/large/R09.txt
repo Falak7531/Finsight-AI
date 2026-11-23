@@ -1,0 +1,80 @@
+=== R09 run 1 ===
+Sort  (cost=73720.49..74075.49 rows=142000 width=100) (actual time=410.052..410.053 rows=0 loops=1)
+  Output: t.txn_id, t.payer_vpa, t.payee_vpa, t.amount, t.initiated_at, t.gap
+  Sort Key: t.initiated_at DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=425523 read=5561 dirtied=1 written=2586
+  ->  Subquery Scan on t  (cost=0.81..57019.51 rows=142000 width=100) (actual time=410.051..410.051 rows=0 loops=1)
+        Output: t.txn_id, t.payer_vpa, t.payee_vpa, t.amount, t.initiated_at, t.gap
+        Filter: (t.gap < '00:10:00'::interval)
+        Rows Removed by Filter: 425546
+        Buffers: shared hit=425523 read=5561 dirtied=1 written=2586
+        ->  WindowAgg  (cost=0.81..51694.51 rows=426000 width=100) (actual time=0.054..399.217 rows=425546 loops=1)
+              Output: transactions.txn_id, transactions.payer_vpa, transactions.payee_vpa, transactions.amount, transactions.initiated_at, (transactions.initiated_at - lag(transactions.initiated_at) OVER (?))
+              Buffers: shared hit=425523 read=5561 dirtied=1 written=2586
+              ->  Incremental Sort  (cost=0.81..42109.51 rows=426000 width=84) (actual time=0.049..321.106 rows=425546 loops=1)
+                    Output: transactions.payer_vpa, transactions.payee_vpa, transactions.initiated_at, transactions.txn_id, transactions.amount
+                    Sort Key: transactions.payer_vpa, transactions.payee_vpa, transactions.initiated_at
+                    Presorted Key: transactions.payer_vpa
+                    Full-sort Groups: 12496  Sort Method: quicksort  Average Memory: 29kB  Peak Memory: 29kB
+                    Buffers: shared hit=425523 read=5561 dirtied=1 written=2586
+                    ->  Index Scan using idx_transactions_payer_status_time on gpay.transactions  (cost=0.42..25370.62 rows=426000 width=84) (actual time=0.006..183.177 rows=425546 loops=1)
+                          Output: transactions.payer_vpa, transactions.payee_vpa, transactions.initiated_at, transactions.txn_id, transactions.amount
+                          Index Cond: ((transactions.status)::text = 'SUCCESS'::text)
+                          Buffers: shared hit=425523 read=5561 dirtied=1 written=2586
+Planning Time: 0.055 ms
+Execution Time: 410.065 ms
+
+=== R09 run 2 ===
+Sort  (cost=73720.49..74075.49 rows=142000 width=100) (actual time=384.900..384.900 rows=0 loops=1)
+  Output: t.txn_id, t.payer_vpa, t.payee_vpa, t.amount, t.initiated_at, t.gap
+  Sort Key: t.initiated_at DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=428784 read=2298 written=321
+  ->  Subquery Scan on t  (cost=0.81..57019.51 rows=142000 width=100) (actual time=384.898..384.899 rows=0 loops=1)
+        Output: t.txn_id, t.payer_vpa, t.payee_vpa, t.amount, t.initiated_at, t.gap
+        Filter: (t.gap < '00:10:00'::interval)
+        Rows Removed by Filter: 425546
+        Buffers: shared hit=428784 read=2298 written=321
+        ->  WindowAgg  (cost=0.81..51694.51 rows=426000 width=100) (actual time=0.034..373.847 rows=425546 loops=1)
+              Output: transactions.txn_id, transactions.payer_vpa, transactions.payee_vpa, transactions.amount, transactions.initiated_at, (transactions.initiated_at - lag(transactions.initiated_at) OVER (?))
+              Buffers: shared hit=428784 read=2298 written=321
+              ->  Incremental Sort  (cost=0.81..42109.51 rows=426000 width=84) (actual time=0.032..295.379 rows=425546 loops=1)
+                    Output: transactions.payer_vpa, transactions.payee_vpa, transactions.initiated_at, transactions.txn_id, transactions.amount
+                    Sort Key: transactions.payer_vpa, transactions.payee_vpa, transactions.initiated_at
+                    Presorted Key: transactions.payer_vpa
+                    Full-sort Groups: 12496  Sort Method: quicksort  Average Memory: 29kB  Peak Memory: 29kB
+                    Buffers: shared hit=428784 read=2298 written=321
+                    ->  Index Scan using idx_transactions_payer_status_time on gpay.transactions  (cost=0.42..25370.62 rows=426000 width=84) (actual time=0.006..159.448 rows=425546 loops=1)
+                          Output: transactions.payer_vpa, transactions.payee_vpa, transactions.initiated_at, transactions.txn_id, transactions.amount
+                          Index Cond: ((transactions.status)::text = 'SUCCESS'::text)
+                          Buffers: shared hit=428784 read=2298 written=321
+Planning Time: 0.056 ms
+Execution Time: 384.915 ms
+
+=== R09 run 3 ===
+Sort  (cost=73720.49..74075.49 rows=142000 width=100) (actual time=366.546..366.547 rows=0 loops=1)
+  Output: t.txn_id, t.payer_vpa, t.payee_vpa, t.amount, t.initiated_at, t.gap
+  Sort Key: t.initiated_at DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=431082
+  ->  Subquery Scan on t  (cost=0.81..57019.51 rows=142000 width=100) (actual time=366.544..366.545 rows=0 loops=1)
+        Output: t.txn_id, t.payer_vpa, t.payee_vpa, t.amount, t.initiated_at, t.gap
+        Filter: (t.gap < '00:10:00'::interval)
+        Rows Removed by Filter: 425546
+        Buffers: shared hit=431082
+        ->  WindowAgg  (cost=0.81..51694.51 rows=426000 width=100) (actual time=0.032..355.631 rows=425546 loops=1)
+              Output: transactions.txn_id, transactions.payer_vpa, transactions.payee_vpa, transactions.amount, transactions.initiated_at, (transactions.initiated_at - lag(transactions.initiated_at) OVER (?))
+              Buffers: shared hit=431082
+              ->  Incremental Sort  (cost=0.81..42109.51 rows=426000 width=84) (actual time=0.031..277.110 rows=425546 loops=1)
+                    Output: transactions.payer_vpa, transactions.payee_vpa, transactions.initiated_at, transactions.txn_id, transactions.amount
+                    Sort Key: transactions.payer_vpa, transactions.payee_vpa, transactions.initiated_at
+                    Presorted Key: transactions.payer_vpa
+                    Full-sort Groups: 12496  Sort Method: quicksort  Average Memory: 29kB  Peak Memory: 29kB
+                    Buffers: shared hit=431082
+                    ->  Index Scan using idx_transactions_payer_status_time on gpay.transactions  (cost=0.42..25370.62 rows=426000 width=84) (actual time=0.006..141.655 rows=425546 loops=1)
+                          Output: transactions.payer_vpa, transactions.payee_vpa, transactions.initiated_at, transactions.txn_id, transactions.amount
+                          Index Cond: ((transactions.status)::text = 'SUCCESS'::text)
+                          Buffers: shared hit=431082
+Planning Time: 0.053 ms
+Execution Time: 366.557 ms

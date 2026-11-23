@@ -1,0 +1,32 @@
+=== W05 run 1 ===
+Update on gpay.bill_payments  (cost=0.00..2102.12 rows=0 width=0) (actual time=56.512..56.512 rows=0 loops=1)
+  Buffers: shared hit=191466 read=1627 dirtied=1944 written=319
+  ->  Seq Scan on gpay.bill_payments  (cost=0.00..2102.12 rows=23687 width=84) (actual time=0.008..6.867 rows=18087 loops=1)
+        Output: 'OVERDUE'::character varying(30), ctid
+        Filter: ((bill_payments.due_date < '2026-07-05'::date) AND ((bill_payments.status)::text = 'DUE'::text))
+        Rows Removed by Filter: 41800
+        Buffers: shared hit=219 read=709 dirtied=709
+Planning Time: 0.029 ms
+Execution Time: 56.526 ms
+
+=== W05 run 2 ===
+Update on gpay.bill_payments  (cost=0.00..2593.67 rows=0 width=0) (actual time=52.334..52.334 rows=0 loops=1)
+  Buffers: shared hit=208701 dirtied=255 written=255
+  ->  Seq Scan on gpay.bill_payments  (cost=0.00..2593.67 rows=29225 width=84) (actual time=0.005..4.835 rows=18087 loops=1)
+        Output: 'OVERDUE'::character varying(30), ctid
+        Filter: ((bill_payments.due_date < '2026-07-05'::date) AND ((bill_payments.status)::text = 'DUE'::text))
+        Rows Removed by Filter: 41800
+        Buffers: shared hit=1145
+Planning Time: 0.029 ms
+Execution Time: 52.343 ms
+
+=== W05 run 3 ===
+Update on gpay.bill_payments  (cost=0.00..3087.49 rows=0 width=0) (actual time=52.360..52.360 rows=0 loops=1)
+  Buffers: shared hit=206166 dirtied=217 written=217
+  ->  Seq Scan on gpay.bill_payments  (cost=0.00..3087.49 rows=34790 width=84) (actual time=0.004..4.967 rows=18087 loops=1)
+        Output: 'OVERDUE'::character varying(30), ctid
+        Filter: ((bill_payments.due_date < '2026-07-05'::date) AND ((bill_payments.status)::text = 'DUE'::text))
+        Rows Removed by Filter: 41800
+        Buffers: shared hit=1363
+Planning Time: 0.029 ms
+Execution Time: 52.367 ms

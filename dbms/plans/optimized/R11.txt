@@ -1,0 +1,51 @@
+=== R11 run 1 ===
+Sort  (cost=574.56..575.80 rows=495 width=20) (actual time=0.067..0.068 rows=51.00 loops=1)
+  Sort Key: expires_at
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=7 read=3
+  ->  Bitmap Heap Scan on rewards  (cost=17.49..552.41 rows=495 width=20) (actual time=0.041..0.049 rows=51.00 loops=1)
+        Recheck Cond: (((status)::text = 'UNSCRATCHED'::text) AND (expires_at < '2026-07-04 00:00:00+05:30'::timestamp with time zone))
+        Heap Blocks: exact=4
+        Buffers: shared hit=4 read=3
+        ->  Bitmap Index Scan on idx_rewards_status_expires  (cost=0.00..17.36 rows=495 width=0) (actual time=0.033..0.033 rows=51.00 loops=1)
+              Index Cond: (((status)::text = 'UNSCRATCHED'::text) AND (expires_at < '2026-07-04 00:00:00+05:30'::timestamp with time zone))
+              Index Searches: 1
+              Buffers: shared read=3
+Planning:
+  Buffers: shared hit=162
+Planning Time: 0.284 ms
+Execution Time: 0.106 ms
+=== R11 run 2 ===
+Sort  (cost=574.56..575.80 rows=495 width=20) (actual time=0.034..0.035 rows=51.00 loops=1)
+  Sort Key: expires_at
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=10
+  ->  Bitmap Heap Scan on rewards  (cost=17.49..552.41 rows=495 width=20) (actual time=0.016..0.022 rows=51.00 loops=1)
+        Recheck Cond: (((status)::text = 'UNSCRATCHED'::text) AND (expires_at < '2026-07-04 00:00:00+05:30'::timestamp with time zone))
+        Heap Blocks: exact=4
+        Buffers: shared hit=7
+        ->  Bitmap Index Scan on idx_rewards_status_expires  (cost=0.00..17.36 rows=495 width=0) (actual time=0.010..0.010 rows=51.00 loops=1)
+              Index Cond: (((status)::text = 'UNSCRATCHED'::text) AND (expires_at < '2026-07-04 00:00:00+05:30'::timestamp with time zone))
+              Index Searches: 1
+              Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=162
+Planning Time: 0.254 ms
+Execution Time: 0.059 ms
+=== R11 run 3 ===
+Sort  (cost=574.56..575.80 rows=495 width=20) (actual time=0.032..0.034 rows=51.00 loops=1)
+  Sort Key: expires_at
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=10
+  ->  Bitmap Heap Scan on rewards  (cost=17.49..552.41 rows=495 width=20) (actual time=0.015..0.021 rows=51.00 loops=1)
+        Recheck Cond: (((status)::text = 'UNSCRATCHED'::text) AND (expires_at < '2026-07-04 00:00:00+05:30'::timestamp with time zone))
+        Heap Blocks: exact=4
+        Buffers: shared hit=7
+        ->  Bitmap Index Scan on idx_rewards_status_expires  (cost=0.00..17.36 rows=495 width=0) (actual time=0.010..0.010 rows=51.00 loops=1)
+              Index Cond: (((status)::text = 'UNSCRATCHED'::text) AND (expires_at < '2026-07-04 00:00:00+05:30'::timestamp with time zone))
+              Index Searches: 1
+              Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=162
+Planning Time: 0.251 ms
+Execution Time: 0.055 ms
